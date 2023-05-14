@@ -1,15 +1,15 @@
-const fs = require('fs').promises;
+import * as fs from 'fs';
 
-class ProductManager {
+export class ProductManager {
 	constructor(path) {
-		this.path = path;
+		this.path = './products.json';
 		this.products = [];
 		this.lastId = 0;
 	}
 
 	async initialize() {
 		try {
-			const data = await fs.readFile(this.path, 'utf-8');
+			const data = await fs.promises.readFile(this.path, {encoding: 'utf-8'});
 			if (data) {
 				this.products = JSON.parse(data);
 				this.lastId = this.products[this.products.length - 1].id;
@@ -18,10 +18,12 @@ class ProductManager {
 			console.error(`Error initializing Product Manager: ${error.message}`);
 		}
 	}
-
 	async save() {
 		try {
-			await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+			const result = await fs.promises.writeFile(
+				this.path,
+				JSON.stringify(this.products, null, 2),
+			);
 			console.log('Product Manager saved successfully');
 		} catch (error) {
 			console.error(`Error saving Product Manager: ${error.message}`);
@@ -101,44 +103,44 @@ const manager = new ProductManager('./products.json');
 
 	console.log(await manager.getProducts());
 
-	await manager.addProduct({
-		title: 'producto prueba',
-		description: 'Este es un producto prueba',
-		price: 200,
-		thumbnail: 'Sin imagen',
-		code: 'abc123',
-		stock: 25,
-	});
+	// await manager.addProduct({
+	// 	title: 'producto prueba',
+	// 	description: 'Este es un producto prueba',
+	// 	price: 200,
+	// 	thumbnail: 'Sin imagen',
+	// 	code: 'abc123',
+	// 	stock: 25,
+	// });
 
-	console.log(await manager.getProducts());
+	// console.log(await manager.getProducts());
 
-	await manager.addProduct({
-		title: 'producto repetido',
-		description: 'Este es un producto repetido',
-		price: 300,
-		thumbnail: 'Sin imagen',
-		code: 'abc123',
-		stock: 10,
-	});
+	// await manager.addProduct({
+	// 	title: 'producto repetido',
+	// 	description: 'Este es un producto repetido',
+	// 	price: 300,
+	// 	thumbnail: 'Sin imagen',
+	// 	code: 'abc123',
+	// 	stock: 10,
+	// });
 
-	await manager.addProduct({
-		title: 'producto nuevo',
-		description: 'Este es un producto nuevo',
-		price: 300,
-		thumbnail: 'Sin imagen',
-		code: 'def456',
-		stock: 10,
-	});
+	// await manager.addProduct({
+	// 	title: 'producto nuevo',
+	// 	description: 'Este es un producto nuevo',
+	// 	price: 300,
+	// 	thumbnail: 'Sin imagen',
+	// 	code: 'def456',
+	// 	stock: 10,
+	// });
 
-	console.log(await manager.getProductById(2));
+	// console.log(await manager.getProductById(2));
 
-	console.log(await manager.getProductById(1));
+	// console.log(await manager.getProductById(1));
 
-	await manager.updateProduct(2, {stock: 20});
+	// await manager.updateProduct(2, {stock: 20});
 
-	console.log(await manager.getProductById(2));
+	// console.log(await manager.getProductById(2));
 
-	await manager.deleteProduct(2);
+	// await manager.deleteProduct(2);
 
-	console.log(await manager.getProducts());
+	// console.log(await manager.getProducts());
 })();
