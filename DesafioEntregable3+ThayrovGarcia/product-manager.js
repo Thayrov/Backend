@@ -100,47 +100,4 @@ export class ProductManager {
 const manager = new ProductManager('./products.json');
 (async function () {
 	await manager.initialize();
-
-	console.log(await manager.getProducts());
-
-	// await manager.addProduct({
-	// 	title: 'producto prueba',
-	// 	description: 'Este es un producto prueba',
-	// 	price: 200,
-	// 	thumbnail: 'Sin imagen',
-	// 	code: 'abc123',
-	// 	stock: 25,
-	// });
-
-	// console.log(await manager.getProducts());
-
-	// await manager.addProduct({
-	// 	title: 'producto repetido',
-	// 	description: 'Este es un producto repetido',
-	// 	price: 300,
-	// 	thumbnail: 'Sin imagen',
-	// 	code: 'abc123',
-	// 	stock: 10,
-	// });
-
-	// await manager.addProduct({
-	// 	title: 'producto nuevo',
-	// 	description: 'Este es un producto nuevo',
-	// 	price: 300,
-	// 	thumbnail: 'Sin imagen',
-	// 	code: 'def456',
-	// 	stock: 10,
-	// });
-
-	// console.log(await manager.getProductById(2));
-
-	// console.log(await manager.getProductById(1));
-
-	// await manager.updateProduct(2, {stock: 20});
-
-	// console.log(await manager.getProductById(2));
-
-	// await manager.deleteProduct(2);
-
-	// console.log(await manager.getProducts());
 })();
