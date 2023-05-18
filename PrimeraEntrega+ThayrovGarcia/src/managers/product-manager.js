@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 export class ProductManager {
 	constructor(path) {
-		this.path = './src/products.json';
+		this.path = './src/db/products.json';
 		this.products = [];
 		this.lastId = 0;
 	}
@@ -97,7 +97,7 @@ export class ProductManager {
 	}
 }
 
-const manager = new ProductManager('./src/products.json');
+const manager = new ProductManager('./src/db/products.json');
 (async function () {
 	await manager.initialize();
 })();

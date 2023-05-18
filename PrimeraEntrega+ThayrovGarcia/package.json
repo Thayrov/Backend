@@ -2,10 +2,10 @@
   "name": "43340",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon ./src/app.js"
   },
   "keywords": [],
   "author": "Thayrov García",

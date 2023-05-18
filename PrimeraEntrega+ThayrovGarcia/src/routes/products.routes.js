@@ -1,20 +1,19 @@
-import {ProductManager} from './src/product-manager.js';
+import {ProductManager} from '../managers/product-manager.js';
 import express from 'express';
 
-const app = express();
-const port = 8080;
+export const routerProducts = express.Router();
 
 const manager = new ProductManager();
 await manager.initialize();
 
-app.get('/products', async (req, res) => {
+routerProducts.get('/', async (req, res) => {
 	const limit = req.query.limit;
 	const products = await manager.getProducts();
 	const result = limit ? products.slice(0, limit) : products;
 	res.send(result);
 });
 
-app.get('/products/:pid', async (req, res) => {
+routerProducts.get('/:pid', async (req, res) => {
 	const pid = req.params.pid;
 	const product = await manager.getProductById(pid);
 	if (product) {
@@ -22,12 +21,4 @@ app.get('/products/:pid', async (req, res) => {
 	} else {
 		res.status(404).send({error: 'Product not found'});
 	}
-});
-
-app.get('*', async (req, res) => {
-	res.status(404).send({error: 'Page not found'});
-});
-
-app.listen(port, () => {
-	console.log(`Server listening at http://localhost:${port}`);
 });
