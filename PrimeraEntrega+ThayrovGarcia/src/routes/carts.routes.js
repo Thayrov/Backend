@@ -3,7 +3,8 @@ import express from 'express';
 
 export const routerCarts = express.Router();
 
-const manager = new CartManager();
+const manager = new CartManager('./src/db/carts.json');
+await manager.initialize();
 
 routerCarts.get('/:cid', async (req, res) => {
 	const cid = req.params.cid;

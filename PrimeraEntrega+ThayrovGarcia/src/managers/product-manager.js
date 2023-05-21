@@ -2,7 +2,7 @@ import * as fs from 'fs/promises';
 
 export class ProductManager {
 	constructor(path) {
-		this.path = './src/db/products.json';
+		this.path = path;
 		this.products = [];
 		this.lastId = 0;
 	}
@@ -37,7 +37,8 @@ export class ProductManager {
 			!productData.description ||
 			!productData.price ||
 			!productData.code ||
-			!productData.stock
+			!productData.stock ||
+			!productData.category
 		) {
 			console.error('All fields are required');
 			return null;
@@ -50,7 +51,7 @@ export class ProductManager {
 
 		this.lastId++;
 		const newProduct = {
-			id: this.lastId,
+			id: this.lastId.toString(),
 			title: productData.title,
 			description: productData.description,
 			code: productData.code,

@@ -2,7 +2,7 @@ import * as fs from 'fs/promises';
 
 export class CartManager {
 	constructor(path) {
-		this.path = './src/db/carts.json';
+		this.path = path;
 		this.carts = [];
 		this.lastId = 0;
 	}
