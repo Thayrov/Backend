@@ -23,7 +23,7 @@ export class CartManager {
 	async save() {
 		try {
 			await fs.writeFile(this.path, JSON.stringify(this.carts, null, 2));
-			console.log('Cart Manager saved successfully');
+			console.log('Cart Manager saved successfully.');
 		} catch (error) {
 			console.error(`Error saving Cart Manager: ${error.message}`);
 		}

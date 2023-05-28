@@ -25,7 +25,7 @@ export class ProductManager {
 	async save() {
 		try {
 			await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
-			console.log('Product Manager saved successfully');
+			console.log('Product Manager saved successfully.');
 		} catch (error) {
 			console.error(`Error saving Product Manager: ${error.message}`);
 		}

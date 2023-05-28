@@ -23,6 +23,6 @@ routerCarts.post('/:cid/product/:pid', async (req, res) => {
 	if (addedProduct) {
 		res.send(addedProduct);
 	} else {
-		res.status(404).send({error: 'Cart or Product not found'});
+		res.status(404).send({error: 'Cart or Product not found.'});
 	}
 });
