@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-Time Products</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    const socket = io();
+
+    socket.on('productCreated', (product) => {
+      // Agregar el nuevo producto a la lista
+        const productList = document.getElementById('productList');
+        const listItem = document.createElement('li');
+        listItem.innerText = `${product.title} - ${product.description}`;
+        productList.appendChild(listItem);
+    });
+
+    socket.on('productUpdated', (product) => {
+      // Actualizar el producto en la lista
+        const productList = document.getElementById('productList');
+        const productItems = productList.getElementsByTagName('li');
+        for (let i = 0; i < productItems.length; i++) {
+            const item = productItems[i];
+            if (item.innerText.includes(product.title)) {
+                item.innerText = `${product.title} - ${product.description}`;
+            break;
+            }
+        }
+    });
+
+    socket.on('productDeleted', (product) => {
+      // Eliminar el producto de la lista
+        const productList = document.getElementById('productList');
+        const productItems = productList.getElementsByTagName('li');
+        for (let i = 0; i < productItems.length; i++) {
+            const item = productItems[i];
+            if (item.innerText.includes(product.title)) {
+                productList.removeChild(item);
+            break;
+            }
+        }
+    });
+</script>
+</head>
+<body>
+    <h1>Real-Time Products</h1>
+    <ul id="productList">
+    {{#each products}}
+    <li>{{this.title}} - {{this.description}}</li>
+    {{/each}}
+    </ul>
+</body>
+</html>
