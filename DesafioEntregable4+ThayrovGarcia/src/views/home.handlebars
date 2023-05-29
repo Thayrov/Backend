@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Home</title>
-</head>
-<body>
-  <h1>Lista de Productos</h1>
-  <ul>
+<h1>Products</h1>
+<ul>
     {{#each products}}
-    <li>{{this}}</li>
+    <li>
+        <h2>{{this.title}}</h2>
+        <p>{{this.description}}</p>
+    </li>
     {{/each}}
-  </ul>
-</body>
-</html>
+</ul>

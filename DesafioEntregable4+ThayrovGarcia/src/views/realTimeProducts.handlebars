@@ -1,49 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Real Time Products</title>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-
-    socket.on('connect', () => {
-      console.log('Connected to server');
-    });
-
-    socket.on('productCreated', (product) => {
-      const productList = document.getElementById('productList');
-      const productItem = document.createElement('li');
-      productItem.innerText = product;
-      productList.appendChild(productItem);
-    });
-
-    socket.on('productDeleted', (productId) => {
-      const productList = document.getElementById('productList');
-      const productItem = document.getElementById(`product_${productId}`);
-      productList.removeChild(productItem);
-    });
-
-    function createProduct() {
-      const product = document.getElementById('productInput').value;
-
-      socket.emit('createProduct', product);
-
-      document.getElementById('productInput').value = '';
-    }
-
-    function deleteProduct(productId) {
-      socket.emit('deleteProduct', productId);
-    }
-  </script>
-</head>
-<body>
-  <h1>Lista de Productos en Tiempo Real</h1>
-  <ul id="productList">
+<h1>Real Time Products</h1>
+<form id="productForm">
+    <input type="text" id="title" placeholder="Title" required>
+    <input type="text" id="description" placeholder="Description" required>
+    <input type="number" id="price" placeholder="Price" required>
+    <input type="text" id="code" placeholder="Code" required>
+    <input type="number" id="stock" placeholder="Stock" required>
+    <input type="text" id="category" placeholder="Category" required>
+    <input type="submit" value="Add Product">
+</form>
+<form id="deleteForm">
+    <input type="text" id="deleteCode" placeholder="Code to delete" required>
+    <input type="submit" value="Delete Product">
+</form>
+<ul id="productList">
     {{#each products}}
-    <li id="product_{{@index}}">{{this}} <button onclick="deleteProduct({{@index}})">Eliminar</button></li>
+    <li>
+        <h2>{{this.title}}</h2>
+        <p>{{this.description}}</p>
+    </li>
     {{/each}}
-  </ul>
-  <input type="text" id="productInput" placeholder="Nuevo Producto">
-  <button onclick="createProduct()">Crear Producto</button>
-</body>
-</html>
+</ul>

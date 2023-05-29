@@ -1,62 +1,49 @@
 import {Server} from 'socket.io';
+import {createServer} from 'http';
 import express from 'express';
 import handlebars from 'express-handlebars';
-import http from 'http';
-import {routerCarts} from './routes/carts.routes.js';
 import {routerProducts} from './routes/products.routes.js';
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer);
 const port = 8080;
+
+app.engine('handlebars', handlebars.engine());
+app.set('view engine', 'handlebars');
+app.set('views', './src/views');
 
 app.use(express.static('src/public'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-app.engine(
-	'handlebars',
-	handlebars.engine({
-		defaultLayout: 'main',
-		layoutsDir: 'src/views/layouts',
-	}),
-);
-app.set('view engine', 'handlebars');
-app.set('views', 'src/views');
-
-const server = http.createServer(app);
-
-const io = new Server(server);
+app.use('/api/products', routerProducts);
 
 io.on('connection', socket => {
 	console.log('Cliente conectado');
+	socket.emit('update-products', products);
 
-	socket.on('createProduct', product => {
-		io.emit('productCreated', product);
+	socket.on('new-product', async productData => {
+		const newProduct = await manager.addProduct(productData);
+		products.push(newProduct);
+		io.emit('update-products', products);
 	});
 
-	socket.on('deleteProduct', productId => {
-		io.emit('productDeleted', productId);
+	socket.on('delete-product', async productId => {
+		const deletedProduct = await manager.deleteProduct(productId);
+		products = products.filter(product => product.id !== productId);
+		io.emit('update-products', products);
 	});
-});
-
-app.use('/api/products', routerProducts);
-app.use('/api/carts', routerCarts);
-
-app.get('/', (req, res) => {
-	const products = manager.getProducts();
-
-	res.render('home', {products});
 });
 
 app.get('/realtimeproducts', (req, res) => {
-	const products = manager.getProducts();
-
-	res.render('realTimeProducts', {products});
+	res.render('realTimeProducts', {layout: 'main'});
 });
 
-app.get('*', (req, res) => {
+app.get('*', async (req, res) => {
 	res.status(404).send({error: 'Page not found'});
 });
 
-server.listen(port, () => {
+httpServer.listen(port, () => {
 	console.log(`Server listening at http://localhost:${port}`);
 });
