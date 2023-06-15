@@ -1,5 +1,5 @@
 {
-  "name": "43340",
+  "name": "backend",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -18,6 +18,7 @@
     "express": "^4.18.2",
     "express-handlebars": "^7.0.7",
     "moment": "^2.29.4",
+    "mongoose": "^7.3.0",
     "multer": "^1.4.5-lts.1",
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.6.1"
