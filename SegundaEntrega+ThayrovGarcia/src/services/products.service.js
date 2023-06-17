@@ -1,33 +1,95 @@
-import Product from '../dao/models/products.model.js';
+import ProductModel from '../dao/models/products.model.js';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
-export const getAllProducts = async limit => {
-	const products = await Product.find().limit(limit);
-	return products;
-};
+/* mongoosePaginate.paginate.options = {
+	limit: 10,
+	lean: true,
+	leanWithId: false,
+}; */
 
-export const getProductById = async id => {
-	const product = await Product.findById(id);
-	return product;
-};
+export class ProductService {
+	/* 	async getAllProducts(options) {
+		try {
+			const result = await ProductModel.paginate({}, options);
+			return result;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	} */
 
-export const getProductByCode = async code => {
-	const product = await Product.findOne({code});
-	return product;
-};
+	async getAllProducts({limit = 10, page, sort, query}) {
+		try {
+			const products = await ProductModel.paginate(
+				{},
+				{page: page || 1, limit: limit || 10, sort: sort},
+			);
+			return products;
+		} catch (error) {
+			throw error;
+		}
+	}
+	/* 	async getAllProducts() {
+		try {
+			const products = await ProductModel.find();
+			return products;
+		} catch (error) {
+			throw error;
+		}
+	} */
+	async getProductById(id) {
+		try {
+			const product = await ProductModel.findById(id);
+			return product;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
 
-export const createProduct = async productData => {
-	const newProduct = await Product.create(productData);
-	return newProduct;
-};
+	async getProductByCode(code) {
+		try {
+			const product = await ProductModel.findOne({code});
+			return product;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
 
-export const updateProduct = async (id, updatedFields) => {
-	const updatedProduct = await Product.findByIdAndUpdate(id, updatedFields, {
-		new: true,
-	});
-	return updatedProduct;
-};
+	async createProduct(productData) {
+		try {
+			const newProduct = await ProductModel.create(productData);
+			return newProduct;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
 
-export const deleteProduct = async id => {
-	const deletedProduct = await Product.findByIdAndDelete(id);
-	return deletedProduct;
-};
+	async updateProduct(id, updatedFields) {
+		try {
+			const updatedProduct = await ProductModel.findByIdAndUpdate(
+				id,
+				updatedFields,
+				{new: true},
+			);
+			return updatedProduct;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
+
+	async deleteProduct(id) {
+		try {
+			const deletedProduct = await ProductModel.findByIdAndDelete(id);
+			return deletedProduct;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
+}
+
+// export default ProductService;

@@ -1,12 +1,12 @@
-import Cart from '../dao/models/carts.model.js';
+import CartModel from '../dao/models/carts.model.js';
 
 export const getCartById = async id => {
-	const cart = await Cart.findById(id).populate('products.product');
+	const cart = await CartModel.findById(id).populate('products.product');
 	return cart;
 };
 
 export const addProductToCart = async (cartId, productId) => {
-	const cart = await Cart.findById(cartId);
+	const cart = await CartModel.findById(cartId);
 	if (!cart) {
 		console.error('Cart not found');
 		return null;

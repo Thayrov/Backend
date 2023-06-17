@@ -1,0 +1,46 @@
+<!-- src/views/products.handlebars -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Products</title>
+  </head>
+  <body>
+    <h1>Products</h1>
+    {{#each products}}
+    <div>
+      <h2>{{this.title}}</h2>
+      <p>Description: {{this.description}}</p>
+      <p>Code: {{this.code}}</p>
+      <p>Price: ${{this.price}}</p>
+      <p>Status: {{this.status}}</p>
+      <p>Stock: {{this.stock}}</p>
+      <p>Category: {{this.category}}</p>
+      {{#each this.thumbnails}}
+      <img src="{{this}}" alt="Thumbnail">
+      {{/each}}
+      <button onclick="addToCart('{{this._id}}')">Add to Cart</button>
+    </div>
+    {{/each}}
+    <script>
+      function addToCart(productId) {
+        // Realiza una solicitud POST a la API para agregar el producto al carrito
+        fetch(`/api/carts/{cartId}/product/${productId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Product added to cart:', data);
+          // Realiza cualquier otra acción necesaria después de agregar el producto al carrito
+        })
+        .catch(error => {
+          console.error('Error adding product to cart:', error);
+          // Realiza cualquier acción necesaria en caso de error
+        });
+      }
+    </script>
+  </body>
+</html>
