@@ -83,7 +83,21 @@ export const getProductById = async (req, res) => {
 		const id = req.params.pid;
 		const product = await productService.getProductById(id);
 		if (product) {
-			// res.send({product});
+			res.send({product});
+		} else {
+			res.status(404).send({error: 'Product not found'});
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).send({error: 'Internal server error'});
+	}
+};
+
+export const getViewProductById = async (req, res) => {
+	try {
+		const id = req.params.pid;
+		const product = await productService.getProductById(id);
+		if (product) {
 			res.render('product', {product});
 		} else {
 			res.status(404).send({error: 'Product not found'});
