@@ -1,46 +1,67 @@
-<!-- src/views/products.handlebars -->
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Products</title>
-  </head>
-  <body>
-    <h1>Products</h1>
-    {{#each products}}
-    <div>
-      <h2>{{this.title}}</h2>
-      <p>Description: {{this.description}}</p>
-      <p>Code: {{this.code}}</p>
-      <p>Price: ${{this.price}}</p>
-      <p>Status: {{this.status}}</p>
-      <p>Stock: {{this.stock}}</p>
-      <p>Category: {{this.category}}</p>
-      {{#each this.thumbnails}}
-      <img src="{{this}}" alt="Thumbnail">
-      {{/each}}
-      <button onclick="addToCart('{{this._id}}')">Add to Cart</button>
-    </div>
+<style>
+  .product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .product-card {
+    width: calc(33.33% - 20px);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .product-card h2 {
+    margin-top: 0;
+  }
+
+  .product-card img {
+    width: 100%;
+    height: auto;
+  }
+</style>
+
+<div>
+
+  <h1>Products</h1>
+
+  <div class="product-grid">
+    {{#each payload}}
+      <div class="product-card">
+        <h2>{{title}}</h2>
+        <p>{{description}}</p>
+        <p>Price: {{price}}</p>
+        <p>Stock: {{stock}}</p>
+        <img src="{{thumbnails}}" alt="{{name}}">
+        <form action="/cart/add/{{id}}" method="POST">
+          <button type="submit">Add to Cart</button>
+        </form>
+      </div>
     {{/each}}
-    <script>
-      function addToCart(productId) {
-        // Realiza una solicitud POST a la API para agregar el producto al carrito
-        fetch(`/api/carts/{cartId}/product/${productId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({})
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Product added to cart:', data);
-          // Realiza cualquier otra acción necesaria después de agregar el producto al carrito
-        })
-        .catch(error => {
-          console.error('Error adding product to cart:', error);
-          // Realiza cualquier acción necesaria en caso de error
-        });
-      }
-    </script>
-  </body>
-</html>
+  </div>
+
+  <p>Status: {{status}}</p>
+  <p>Code: {{code}}</p>
+  <p>Category: {{category}}</p>
+
+  <p>Total Pages: {{totalPages}}</p>
+  <p>Prev Page: {{prevPage}}</p>
+  <p>Next Page: {{nextPage}}</p>
+  <p>Page: {{page}}</p>
+  <p>Has Prev Page: {{hasPrevPage}}</p>
+  <p>Has Next Page: {{hasNextPage}}</p>
+
+  {{#if prevLink}}
+    <a href="{{prevLink}}">Previous Page</a>
+  {{/if}}
+
+  {{#if nextLink}}
+    <a href="{{nextLink}}">Next Page</a>
+  {{/if}}
+
+</div>

@@ -1,43 +1,83 @@
 import ProductModel from '../dao/models/products.model.js';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-/* mongoosePaginate.paginate.options = {
-	limit: 10,
-	lean: true,
-	leanWithId: false,
-}; */
-
 export class ProductService {
-	/* 	async getAllProducts(options) {
+	validateCreateProduct(productData) {
+		const {
+			title,
+			description,
+			code,
+			price,
+			stock,
+			thumbnail,
+		} = // , category
+			productData;
+		if (
+			!title ||
+			!description ||
+			!code ||
+			!price ||
+			!stock ||
+			// !category ||
+			!thumbnail
+		) {
+			console.log('validation error: Please complete all fields.');
+			throw 'Validation Error';
+		}
+	}
+	validateUpdateProduct(id, updatedFields) {
+		const {
+			title,
+			description,
+			code,
+			price,
+			stock,
+			thumbnail,
+		} = // , category
+			updatedFields;
+		if (
+			!id ||
+			!title ||
+			!description ||
+			!code ||
+			!price ||
+			!stock ||
+			// !category ||
+			!thumbnail
+		) {
+			console.log('validation error: please complete required data.');
+			throw 'Validation Error';
+		}
+	}
+	validateId(id) {
+		if (!id) {
+			console.log('validation error: ID not available.');
+			throw 'Validation Error';
+		}
+	}
+
+	async getAllProducts({limit = 5, page = 1, sort, query}) {
 		try {
-			const result = await ProductModel.paginate({}, options);
-			return result;
+			const options = {
+				page: parseInt(page),
+				limit: parseInt(limit),
+				sort: sort ? {price: sort} : undefined,
+			};
+
+			const queryObj = query
+				? {$or: [{category: query}, {availability: query}]}
+				: {};
+
+			const products = await ProductModel.paginate(queryObj, options);
+			return products;
 		} catch (error) {
 			console.error(error);
 			throw error;
 		}
-	} */
-
-	async getAllProducts({limit = 10, page, sort, query}) {
-		try {
-			const products = await ProductModel.paginate(
-				{},
-				{page: page || 1, limit: limit || 10, sort: sort},
-			);
-			return products;
-		} catch (error) {
-			throw error;
-		}
 	}
-	/* 	async getAllProducts() {
-		try {
-			const products = await ProductModel.find();
-			return products;
-		} catch (error) {
-			throw error;
-		}
-	} */
+
 	async getProductById(id) {
+		this.validateId(id);
 		try {
 			const product = await ProductModel.findById(id);
 			return product;
@@ -58,6 +98,7 @@ export class ProductService {
 	}
 
 	async createProduct(productData) {
+		this.validateCreateProduct(productData);
 		try {
 			const newProduct = await ProductModel.create(productData);
 			return newProduct;
@@ -68,6 +109,7 @@ export class ProductService {
 	}
 
 	async updateProduct(id, updatedFields) {
+		this.validateUpdateProduct(id, updatedFields);
 		try {
 			const updatedProduct = await ProductModel.findByIdAndUpdate(
 				id,
@@ -91,5 +133,3 @@ export class ProductService {
 		}
 	}
 }
-
-// export default ProductService;

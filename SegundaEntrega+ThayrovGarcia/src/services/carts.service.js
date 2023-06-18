@@ -1,29 +1,102 @@
 import CartModel from '../dao/models/carts.model.js';
 
-export const getCartById = async id => {
-	const cart = await CartModel.findById(id).populate('products.product');
-	return cart;
-};
+export class CartService {
+	async createCart(cartData) {
+		try {
+			const newCart = await CartModel.create(cartData);
+			return newCart;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
+	async getCartById(cartId) {
+		try {
+			const populatedCart = await CartModel.findById(cartId)
+				.populate({
+					path: 'products.product',
+					select: 'id title description price thumbnails code stock',
+					model: 'Product',
+				})
+				.exec();
 
-export const addProductToCart = async (cartId, productId) => {
-	const cart = await CartModel.findById(cartId);
-	if (!cart) {
-		console.error('Cart not found');
-		return null;
+			if (!populatedCart) {
+				return null;
+			}
+
+			populatedCart.products = populatedCart.products.map(product => {
+				return {
+					_id: product.product?._id?.toString(),
+					quantity: product.quantity,
+				};
+			});
+
+			console.log('Populated Cart:', populatedCart);
+
+			return populatedCart;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
 	}
 
-	const existingProduct = cart.products.find(
-		p => p.product.toString() === productId,
-	);
-	if (existingProduct) {
-		existingProduct.quantity++;
-		await cart.save();
-		console.log('Product quantity updated successfully');
-		return existingProduct;
+	async addProductToCart(cartId, productId, quantity) {
+		try {
+			const cart = await CartModel.findById(cartId);
+			if (!cart) {
+				return null;
+			}
+			const existingProduct = cart.products.find(
+				item => item.product.toString() === productId,
+			);
+			if (existingProduct) {
+				existingProduct.quantity += quantity;
+			} else {
+				cart.products.push({product: productId, quantity: quantity});
+			}
+			const updatedCart = await cart.save();
+			return updatedCart;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
 	}
 
-	cart.products.push({product: productId, quantity: 1});
-	await cart.save();
-	console.log('Product added to cart successfully');
-	return cart.products[cart.products.length - 1];
-};
+	async deleteProductFromCart(cartId, productId) {
+		try {
+			await CartModel.updateOne(
+				{_id: cartId},
+				{$pull: {products: {_id: productId}}},
+			);
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async updateCart(cartId, products) {
+		try {
+			await CartModel.updateOne({_id: cartId}, {products});
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async updateProductQuantity(cartId, productId, quantity) {
+		try {
+			await CartModel.updateOne(
+				{_id: cartId, 'products._id': productId},
+				{$set: {'products.$.quantity': quantity}},
+			);
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async clearCart(cartId) {
+		try {
+			await CartModel.updateOne({_id: cartId}, {products: []});
+		} catch (error) {
+			throw error;
+		}
+	}
+}
