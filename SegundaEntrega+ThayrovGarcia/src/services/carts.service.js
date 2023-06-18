@@ -1,4 +1,5 @@
 import CartModel from '../dao/models/carts.model.js';
+import {ProductService} from './products.service.js';
 
 export class CartService {
 	async createCart(cartData) {
@@ -15,7 +16,7 @@ export class CartService {
 			const populatedCart = await CartModel.findById(cartId)
 				.populate({
 					path: 'products.product',
-					select: 'id title description price thumbnails code stock',
+					select: 'title description price stock thumbnails status code',
 					model: 'Product',
 				})
 				.exec();
@@ -25,9 +26,11 @@ export class CartService {
 			}
 
 			populatedCart.products = populatedCart.products.map(product => {
+				const {_id, quantity, product: {title} = {}} = product;
 				return {
-					_id: product.product?._id?.toString(),
-					quantity: product.quantity,
+					_id: _id.toString(),
+					quantity,
+					title: title || '',
 				};
 			});
 
@@ -59,6 +62,35 @@ export class CartService {
 		} catch (error) {
 			console.error(error);
 			throw error;
+		}
+	}
+
+	async addProductToCart(cartId, productId) {
+		try {
+			const productToAdd = await ProductService.getProductById(productId);
+
+			if (!productToAdd) {
+				throw new Error('Product not found');
+			}
+
+			console.log(productToAdd._id);
+
+			let cart = await CartModel.findOneAndUpdate(
+				{_id: cartId, 'products.product': productToAdd._id},
+				{
+					$inc: {'products.$.quantity': 1},
+				},
+			);
+
+			if (!cart) {
+				cart = await CartModel.findByIdAndUpdate(cartId, {
+					$push: {products: {product: productToAdd._id, quantity: 1}},
+				});
+			}
+
+			return cart;
+		} catch (error) {
+			throw new Error(error);
 		}
 	}
 

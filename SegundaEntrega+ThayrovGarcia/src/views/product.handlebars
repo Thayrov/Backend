@@ -1,7 +1,18 @@
 <style>
+
+  .product-grid {
+    display: flex;
+    justify-content: center;
+  }
+  
   .product-container {
+    width: calc(33.33% - 20px);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
     text-align: center;
-    margin-top: 20px;
   }
 
   .product-container h1 {
@@ -13,16 +24,20 @@
     font-size: 16px;
     margin-bottom: 5px;
   }
+  
+    .product-container img {
+    width: 100%;
+    height: auto;
+  }
 </style>
-
+<div class="product-grid">
 <div class="product-container">
   <h1>Product</h1>
   {{#each product}}
     <p>{{this.title}}</p>
     <p>{{this.description}}</p>
-    <p>Price: {{this.price}}</p>
-    <p>Stock: {{this.stock}}</p>
     <img src="{{thumbnails}}" alt="{{name}}">
   {{/each}}
 </div>
 
+</div>

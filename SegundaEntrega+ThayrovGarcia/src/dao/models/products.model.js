@@ -13,7 +13,7 @@ const productSchema = new Schema(
 		// status: {type: Boolean, required: true, default: true},
 		thumbnails: [String],
 	},
-	{collection: 'products', toJSON: {virtuals: true}},
+	{collection: 'products'},
 );
 
 productSchema.plugin(mongoosePaginate);
