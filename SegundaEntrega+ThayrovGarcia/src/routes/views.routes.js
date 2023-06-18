@@ -1,8 +1,8 @@
 import express from 'express';
-import {getAllProducts} from '../controllers/products.controller.js';
+import {getViewAllProducts} from '../controllers/products.controller.js';
 
 const viewsRouter = express.Router();
 
-viewsRouter.get('/', getAllProducts);
+viewsRouter.get('/', getViewAllProducts);
 
 export default viewsRouter;

@@ -8,7 +8,7 @@ export const getAllProducts = async (req, res) => {
 
 		const products = await productService.getAllProducts({limit, ...query});
 
-		/* 		res.status(200).send({
+		res.status(200).send({
 			status: 'Success',
 			payload: products.docs.map(product => ({
 				id: product._id.toString(),
@@ -17,9 +17,9 @@ export const getAllProducts = async (req, res) => {
 				price: product.price,
 				stock: product.stock,
 				thumbnails: product.thumbnails,
-				status: product.status,
+				// status: product.status,
 				code: product.code,
-				category: product.category,
+				// category: product.category,
 			})),
 			totalPages: products.totalPages,
 			prevPage: products.prevPage,
@@ -33,7 +33,18 @@ export const getAllProducts = async (req, res) => {
 			nextLink: products.hasNextPage
 				? `/api/products?limit=${limit}&page=${products.nextPage}`
 				: null,
-		}); */
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({status: 'Internal server error'});
+	}
+};
+
+export const getViewAllProducts = async (req, res) => {
+	try {
+		const {limit = 5, ...query} = req.query;
+
+		const products = await productService.getAllProducts({limit, ...query});
 
 		res.render('products', {
 			status: 'Success',
@@ -55,10 +66,10 @@ export const getAllProducts = async (req, res) => {
 			hasPrevPage: products.hasPrevPage,
 			hasNextPage: products.hasNextPage,
 			prevLink: products.hasPrevPage
-				? `/api/products?limit=${limit}&page=${products.prevPage}`
+				? `/view/products?limit=${limit}&page=${products.prevPage}`
 				: null,
 			nextLink: products.hasNextPage
-				? `/api/products?limit=${limit}&page=${products.nextPage}`
+				? `/view/products?limit=${limit}&page=${products.nextPage}`
 				: null,
 		});
 	} catch (error) {
