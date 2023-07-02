@@ -27,9 +27,7 @@
 </style>
 
 <div>
-
   <h1>Products</h1>
-
   <div class="product-grid">
     {{#each payload}}
       <div class="product-card">
@@ -44,24 +42,19 @@
       </div>
     {{/each}}
   </div>
-
   <p>Status: {{status}}</p>
   <p>Code: {{code}}</p>
   <p>Category: {{category}}</p>
-
   <p>Total Pages: {{totalPages}}</p>
   <p>Prev Page: {{prevPage}}</p>
   <p>Next Page: {{nextPage}}</p>
   <p>Page: {{page}}</p>
   <p>Has Prev Page: {{hasPrevPage}}</p>
   <p>Has Next Page: {{hasNextPage}}</p>
-
   {{#if prevLink}}
     <a href="{{prevLink}}">Previous Page</a>
   {{/if}}
-
   {{#if nextLink}}
     <a href="{{nextLink}}">Next Page</a>
   {{/if}}
-
 </div>
