@@ -1,4 +1,5 @@
 import UserModel from '../dao/models/user.model.js';
+import {isValidPassword} from '../../utils.js';
 
 class AuthService {
 	async registerUser(user) {
@@ -12,10 +13,7 @@ class AuthService {
 
 	async loginUser({email, password}) {
 		const user = await UserModel.findOne({email});
-		if (!user) {
-			throw new Error('Invalid credentials');
-		}
-		if (user.password !== password) {
+		if (!user || !isValidPassword(password, user.password)) {
 			throw new Error('Invalid credentials');
 		}
 		return user;

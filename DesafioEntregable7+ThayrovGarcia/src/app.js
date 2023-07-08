@@ -5,6 +5,7 @@ import db from './dao/db.js';
 import express from 'express';
 import {fileURLToPath} from 'url';
 import handlebars from 'express-handlebars';
+import iniPassport from './config/passport.config.js';
 import path from 'path';
 import routerCarts from './routes/carts.routes.js';
 import routerProducts from './routes/products.routes.js';
@@ -33,6 +34,10 @@ app.use(
 		}),
 	}),
 );
+iniPassport();
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.engine('handlebars', handlebars.engine());
 app.set('views', path.join(__dirname, 'views'));
@@ -42,7 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCarts);
-app.use('/api/auth', authRouter);
+app.use('/api/sessions', authRouter);
 app.use('/', viewsRouter);
 
 app.get('*', (req, res) => {
