@@ -1,0 +1,60 @@
+<style>
+  .product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .product-card {
+    width: calc(33.33% - 20px);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .product-card h2 {
+    margin-top: 0;
+  }
+
+  .product-card img {
+    width: 100%;
+    height: auto;
+  }
+</style>
+
+<div>
+  <h1>Products</h1>
+  <div class="product-grid">
+    {{#each payload}}
+      <div class="product-card">
+        <h2>{{title}}</h2>
+        <p>{{description}}</p>
+        <p>Price: {{price}}</p>
+        <p>Stock: {{stock}}</p>
+        <img src="{{thumbnails}}" alt="{{name}}">
+        <form action="/cart/add/{{id}}" method="POST">
+          <button type="submit">Add to Cart</button>
+        </form>
+      </div>
+    {{/each}}
+  </div>
+  <p>Status: {{status}}</p>
+  <p>Code: {{code}}</p>
+  <p>Category: {{category}}</p>
+  <p>Total Pages: {{totalPages}}</p>
+  <p>Prev Page: {{prevPage}}</p>
+  <p>Next Page: {{nextPage}}</p>
+  <p>Page: {{page}}</p>
+  <p>Has Prev Page: {{hasPrevPage}}</p>
+  <p>Has Next Page: {{hasNextPage}}</p>
+  {{#if prevLink}}
+    <a href="{{prevLink}}">Previous Page</a>
+  {{/if}}
+  {{#if nextLink}}
+    <a href="{{nextLink}}">Next Page</a>
+  {{/if}}
+</div>
