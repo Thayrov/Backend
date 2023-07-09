@@ -5,8 +5,24 @@ import passport from 'passport';
 
 const authRouter = express.Router();
 
-authRouter.post('/register', registerUser);
-authRouter.post('/login', loginUser);
+authRouter.post(
+	'/register',
+	passport.authenticate('register', {
+		successRedirect: '/profile',
+		failureRedirect: '/register',
+		failureFlash: true,
+	}),
+);
+
+authRouter.post(
+	'/login',
+	passport.authenticate('login', {
+		successRedirect: '/profile',
+		failureRedirect: '/login',
+		failureFlash: true,
+	}),
+);
+
 authRouter.get(
 	'/github',
 	passport.authenticate('github', {scope: ['user:email']}),

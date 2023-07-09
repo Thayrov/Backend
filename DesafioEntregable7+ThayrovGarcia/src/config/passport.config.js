@@ -1,34 +1,30 @@
+import {createHash, isValidPassword} from './bcrypt.js';
 import {githubClientID, githubClientSecret} from './env.js';
 
-import AuthService from '../services/auth.service.js';
 import {Strategy as GitHubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
-import {isValidPassword} from './bcrypt.js';
+import UserModel from '../dao/models/user.model.js';
+import fetch from 'node-fetch';
 import passport from 'passport';
 
-const iniPassport = () => {
-	// Local Register Strategy
+export default function iniPassport() {
+	// Local Login Strategy
 	passport.use(
-		'local.register',
+		'login',
 		new LocalStrategy(
-			{
-				usernameField: 'email',
-				passwordField: 'password',
-				passReqToCallback: true,
-			},
-			async (req, email, password, done) => {
+			{usernameField: 'email'},
+			async (username, password, done) => {
 				try {
-					const existingUser = await UserModel.findOne({email});
-					if (existingUser) {
-						return done(
-							null,
-							false,
-							req.flash('signupMessage', 'That email is already taken.'),
-						);
+					const user = await UserModel.findOne({email: username});
+					if (!user) {
+						console.log('User Not Found with username (email) ' + username);
+						return done(null, false);
 					}
-					const newUser = new UserModel({email, password});
-					const savedUser = await newUser.save();
-					return done(null, savedUser);
+					if (!isValidPassword(password, user.password)) {
+						console.log('Invalid Password');
+						return done(null, false);
+					}
+					return done(null, user);
 				} catch (err) {
 					return done(err);
 				}
@@ -36,35 +32,35 @@ const iniPassport = () => {
 		),
 	);
 
-	// Local Login Strategy
+	// Local Register Strategy
 	passport.use(
-		'local.login',
+		'register',
 		new LocalStrategy(
 			{
-				usernameField: 'email',
-				passwordField: 'password',
 				passReqToCallback: true,
+				usernameField: 'email',
 			},
-			async (req, email, password, done) => {
+			async (req, username, password, done) => {
 				try {
-					const user = await UserModel.findOne({email});
-					if (!user) {
-						return done(
-							null,
-							false,
-							req.flash('loginMessage', 'No user found.'),
-						);
+					const {firstName, lastName} = req.body;
+					let user = await UserModel.findOne({email: username});
+					if (user) {
+						console.log('User already exists');
+						return done(null, false);
 					}
-					if (!isValidPassword(password, user.password)) {
-						return done(
-							null,
-							false,
-							req.flash('loginMessage', 'Wrong password.'),
-						);
-					}
-					return done(null, user);
-				} catch (err) {
-					return done(err);
+					const newUser = {
+						email: username,
+						firstName,
+						lastName,
+						password: createHash(password),
+					};
+					let userCreated = await UserModel.create(newUser);
+					console.log('User Registration successful');
+					return done(null, userCreated);
+				} catch (e) {
+					console.log('Error in register');
+					console.log(e);
+					return done(e);
 				}
 			},
 		),
@@ -72,40 +68,59 @@ const iniPassport = () => {
 
 	// GitHub Strategy
 	passport.use(
+		'github',
 		new GitHubStrategy(
 			{
 				clientID: githubClientID,
 				clientSecret: githubClientSecret,
 				callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
 			},
-			async (accessToken, refreshToken, profile, done) => {
+			async (accessToken, _, profile, done) => {
 				try {
-					let user = await UserModel.findOne({githubId: profile.id});
-					if (user) {
+					const res = await fetch('https://api.github.com/user/emails', {
+						headers: {
+							Accept: 'application/vnd.github+json',
+							Authorization: 'Bearer ' + accessToken,
+						},
+					});
+					const emails = await res.json();
+					const emailDetail = emails.find(email => email.verified == true);
+
+					if (!emailDetail) {
+						return done(new Error('cannot get a valid email for this user'));
+					}
+					profile.email = emailDetail.email;
+
+					let user = await UserModel.findOne({email: profile.email});
+					if (!user) {
+						const newUser = {
+							email: profile.email,
+							firstName: profile._json.name || profile._json.login || 'noname',
+							lastName: 'nolast',
+							password: createHash(accessToken.substring(0, 10)),
+						};
+						let userCreated = await UserModel.create(newUser);
+						console.log('User Registration successful');
+						return done(null, userCreated);
+					} else {
+						console.log('User already exists');
 						return done(null, user);
 					}
-					user = await UserModel.create({
-						githubId: profile.id,
-						email: profile.emails[0].value,
-						name: profile.displayName,
-						password: createHash(accessToken.substring(0, 10)),
-					});
-					return done(null, user);
-				} catch (err) {
-					return done(err);
+				} catch (e) {
+					console.log('Error in GitHub auth');
+					console.log(e);
+					return done(e);
 				}
 			},
 		),
 	);
+
 	passport.serializeUser((user, done) => {
-		done(null, user.id);
+		done(null, user._id);
 	});
 
-	passport.deserializeUser((id, done) => {
-		UserModel.findById(id, (err, user) => {
-			done(err, user);
-		});
+	passport.deserializeUser(async (id, done) => {
+		let user = await UserModel.findById(id);
+		done(null, user);
 	});
-};
-
-export default iniPassport;
+}
