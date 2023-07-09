@@ -6,6 +6,7 @@ import express from 'express';
 import {fileURLToPath} from 'url';
 import handlebars from 'express-handlebars';
 import iniPassport from './config/passport.config.js';
+import passport from 'passport';
 import path from 'path';
 import routerCarts from './routes/carts.routes.js';
 import routerProducts from './routes/products.routes.js';
