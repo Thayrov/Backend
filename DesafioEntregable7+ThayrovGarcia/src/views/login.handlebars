@@ -1,15 +1,101 @@
+
+<style>
+    body {
+        background-color: #fff;
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
+
+    div {
+        width: 300px;
+        margin: 0 auto;
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    input[type="email"], input[type="password"] {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    input[type="submit"] {
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    p {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    a {
+        color: #333;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #4CAF50;
+    }
+    .button-link {
+    display: inline-block;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 10px;
+    cursor: pointer;
+    }
+
+    .button-link:hover {
+        background-color: #45a049;
+    }
+</style>
+
+
 <div>
-<h1>Login</h1>
-<form action="/login" method="POST">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-    <br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <br>
-    <p>Or</p>
-    <a href="/api/sessions/githubcallback">Login with GitHub</a>
-    <input type="submit" value="Login">
-</form>
-<p>Don't have an account? <a href="/register">Register</a></p>
+    <h1>Login</h1>
+    <form action="/login" method="POST">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <input type="submit" value="Login">
+        <p>Or</p>
+            <a class="button-link" href="/api/sessions/githubcallback">Login with GitHub</a>
+        </form>
+        <p>Don't have an account? <a class="button-link" href="/register">Register</a></p>
+    </div>
 </div>
+
+

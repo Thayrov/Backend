@@ -16,7 +16,7 @@ const viewsRouter = express.Router();
 
 viewsRouter.get('/view/products/', isAuthenticated, getViewAllProducts);
 viewsRouter.get('/view/products/:pid', isAuthenticated, getViewProductById);
-
+viewsRouter.get('/', renderLoginForm);
 viewsRouter.get('/login', renderLoginForm);
 viewsRouter.get('/register', renderRegisterForm);
 viewsRouter.get('/profile', isAuthenticated, renderProfile);
