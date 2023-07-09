@@ -3,7 +3,7 @@ import {githubClientID, githubClientSecret} from './env.js';
 import AuthService from '../services/auth.service.js';
 import {Strategy as GitHubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
-import {isValidPassword} from '../utils.js';
+import {isValidPassword} from './bcrypt.js';
 import passport from 'passport';
 
 const iniPassport = () => {

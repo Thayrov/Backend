@@ -1,6 +1,6 @@
 import {Schema, model} from 'mongoose';
 
-import {createHash} from '../../utils.js';
+import {createHash} from '../../config/bcrypt.js';
 
 const UserSchema = new Schema({
 	first_name: {type: String, required: true},

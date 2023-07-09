@@ -1,5 +1,5 @@
 import UserModel from '../dao/models/user.model.js';
-import {isValidPassword} from '../utils.js';
+import {isValidPassword} from '../config/bcrypt.js';
 
 class AuthService {
 	async registerUser(user) {

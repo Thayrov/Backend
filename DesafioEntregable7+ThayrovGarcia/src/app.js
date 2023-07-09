@@ -6,6 +6,7 @@ import express from 'express';
 import {fileURLToPath} from 'url';
 import handlebars from 'express-handlebars';
 import iniPassport from './config/passport.config.js';
+import {mongoUrl} from './config/env.js';
 import passport from 'passport';
 import path from 'path';
 import routerCarts from './routes/carts.routes.js';
@@ -29,8 +30,7 @@ app.use(
 		resave: true,
 		saveUninitialized: true,
 		store: MongoStore.create({
-			mongoUrl:
-				'mongodb+srv://thayrovg:m4FAi7aVYaNKXNyT@backend-cluster.8mvp8qv.mongodb.net/?retryWrites=true&w=majority',
+			mongoUrl: mongoUrl,
 			ttl: 86400 * 7,
 		}),
 	}),
