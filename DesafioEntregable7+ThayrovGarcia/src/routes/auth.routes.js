@@ -12,6 +12,7 @@ authRouter.post(
 		failureRedirect: '/register',
 		failureFlash: true,
 	}),
+	registerUser,
 );
 
 authRouter.post(
@@ -21,6 +22,7 @@ authRouter.post(
 		failureRedirect: '/login',
 		failureFlash: true,
 	}),
+	loginUser,
 );
 
 authRouter.get(
