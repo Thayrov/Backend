@@ -7,22 +7,22 @@ const authRouter = express.Router();
 
 authRouter.post(
 	'/register',
+	registerUser,
 	passport.authenticate('register', {
 		successRedirect: '/profile',
 		failureRedirect: '/register',
 		failureFlash: true,
 	}),
-	registerUser,
 );
 
 authRouter.post(
 	'/login',
+	loginUser,
 	passport.authenticate('login', {
 		successRedirect: '/profile',
 		failureRedirect: '/login',
 		failureFlash: true,
 	}),
-	loginUser,
 );
 
 authRouter.get(
