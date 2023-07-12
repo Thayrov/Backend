@@ -42,7 +42,7 @@ export default function iniPassport() {
 			},
 			async (req, username, password, done) => {
 				try {
-					const {firstName, lastName} = req.body;
+					const {first_name, last_name, age} = req.body;
 					let user = await UserModel.findOne({email: username});
 					if (user) {
 						console.log('User already exists');
@@ -50,8 +50,9 @@ export default function iniPassport() {
 					}
 					const newUser = {
 						email: username,
-						firstName,
-						lastName,
+						first_name,
+						last_name,
+						age,
 						password: createHash(password),
 					};
 					let userCreated = await UserModel.create(newUser);
@@ -81,6 +82,7 @@ export default function iniPassport() {
 						headers: {
 							Accept: 'application/vnd.github+json',
 							Authorization: 'Bearer ' + accessToken,
+							'X-Github-Api-Version': '2022-11-28',
 						},
 					});
 					const emails = await res.json();
@@ -95,8 +97,9 @@ export default function iniPassport() {
 					if (!user) {
 						const newUser = {
 							email: profile.email,
-							firstName: profile._json.name || profile._json.login || 'noname',
-							lastName: 'nolast',
+							first_name: profile._json.name || profile._json.login || 'noname',
+							last_name: 'nolast',
+							age: 0,
 							password: createHash(accessToken.substring(0, 10)),
 						};
 						let userCreated = await UserModel.create(newUser);

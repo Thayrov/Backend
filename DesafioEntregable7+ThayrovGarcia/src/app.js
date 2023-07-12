@@ -2,6 +2,7 @@ import MongoStore from 'connect-mongo';
 import authRouter from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import db from './dao/db.js';
+import {errorRouter} from './routes/error.routes.js';
 import express from 'express';
 import {fileURLToPath} from 'url';
 import handlebars from 'express-handlebars';
@@ -50,6 +51,7 @@ app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCarts);
 app.use('/api/sessions', authRouter);
 app.use('/', viewsRouter);
+app.use('/error', errorRouter);
 
 app.get('*', (req, res) => {
 	return res.status(404).json({
