@@ -49,6 +49,11 @@ export const renderProfile = (req, res) => {
 	return res.render('profile', {user});
 };
 
+export const renderAdmin = (req, res) => {
+	const {user} = req.session;
+	return res.render('admin', {user});
+};
+
 export const handleLogout = (req, res) => {
 	req.session.destroy();
 	res.redirect('/login');

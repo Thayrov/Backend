@@ -4,6 +4,7 @@ import {
 } from '../controllers/products.controller.js';
 import {
 	handleLogout,
+	renderAdmin,
 	renderLoginForm,
 	renderProfile,
 	renderRegisterForm,
@@ -20,8 +21,6 @@ viewsRouter.get('/', renderLoginForm);
 viewsRouter.get('/login', renderLoginForm);
 viewsRouter.get('/register', renderRegisterForm);
 viewsRouter.get('/profile', isAuthenticated, renderProfile);
+viewsRouter.get('/admin', isAdmin, renderAdmin);
 viewsRouter.get('/logout', handleLogout);
-viewsRouter.get('/admin', isAdmin, (req, res) => {
-	res.send('Admin page');
-});
 export default viewsRouter;
