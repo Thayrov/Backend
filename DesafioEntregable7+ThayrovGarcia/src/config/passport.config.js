@@ -53,6 +53,7 @@ export default function iniPassport() {
 						first_name,
 						last_name,
 						age,
+						role: user,
 						password: createHash(password),
 					};
 					let userCreated = await UserModel.create(newUser);
@@ -100,6 +101,7 @@ export default function iniPassport() {
 							first_name: profile._json.name || profile._json.login || 'noname',
 							last_name: 'nolast',
 							age: 0,
+							role: user,
 							password: createHash(accessToken.substring(0, 10)),
 						};
 						let userCreated = await UserModel.create(newUser);
