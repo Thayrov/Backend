@@ -1,9 +1,12 @@
 export const isAuthenticated = (req, res, next) => {
-	if (req.session.user) {
+	console.log('Session:', req.session);
+
+	if (req.isAuthenticated()) {
+		console.log('User is authenticated:', req.user);
 		return next();
-	} else {
-		return res.redirect('/login');
 	}
+	console.log('User is not authenticated');
+	return res.redirect('/login');
 };
 
 export const isAdmin = (req, res, next) => {

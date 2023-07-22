@@ -1,3 +1,5 @@
+import {mongoUrl, sessionSecret} from './config/env.js';
+
 import MongoStore from 'connect-mongo';
 import authRouter from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
@@ -7,7 +9,6 @@ import express from 'express';
 import {fileURLToPath} from 'url';
 import handlebars from 'express-handlebars';
 import iniPassport from './config/passport.config.js';
-import {mongoUrl} from './config/env.js';
 import passport from 'passport';
 import path from 'path';
 import routerCarts from './routes/carts.routes.js';
@@ -24,19 +25,19 @@ const port = 8080;
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
+iniPassport();
 
 app.use(
 	session({
-		secret: 'secret-key',
-		resave: true,
-		saveUninitialized: true,
+		secret: sessionSecret,
+		resave: false,
+		saveUninitialized: false,
 		store: MongoStore.create({
 			mongoUrl: mongoUrl,
 			ttl: 86400 * 7,
 		}),
 	}),
 );
-iniPassport();
 
 app.use(passport.initialize());
 app.use(passport.session());

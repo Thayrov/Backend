@@ -15,6 +15,19 @@ export default function iniPassport() {
 			{usernameField: 'email'},
 			async (username, password, done) => {
 				try {
+					// Check for hardcoded admin user
+					if (
+						username === 'adminCoder@coder.com' &&
+						password === 'adminCod3r123'
+					) {
+						const adminUser = {
+							_id: 'adminId',
+							email: 'adminCoder@coder.com',
+							role: 'admin',
+						};
+						return done(null, adminUser);
+					}
+
 					const user = await UserModel.findOne({email: username});
 					if (!user) {
 						console.log('User Not Found with username (email) ' + username);
@@ -48,13 +61,14 @@ export default function iniPassport() {
 						console.log('User already exists');
 						return done(null, false);
 					}
+					const hashedPassword = await createHash(password);
 					const newUser = {
 						email: username,
 						first_name,
 						last_name,
 						age,
-						role: user,
-						password: createHash(password),
+						role: 'user',
+						password: hashedPassword,
 					};
 					let userCreated = await UserModel.create(newUser);
 					console.log('User Registration successful');
@@ -101,7 +115,7 @@ export default function iniPassport() {
 							first_name: profile._json.name || profile._json.login || 'noname',
 							last_name: 'nolast',
 							age: 0,
-							role: user,
+							role: 'user',
 							password: createHash(accessToken.substring(0, 10)),
 						};
 						let userCreated = await UserModel.create(newUser);
@@ -119,12 +133,21 @@ export default function iniPassport() {
 			},
 		),
 	);
-
 	passport.serializeUser((user, done) => {
+		console.log('Serializing user:', user);
 		done(null, user._id);
 	});
 
 	passport.deserializeUser(async (id, done) => {
+		console.log('Deserializing user with id:', id);
+		if (id === 'adminId') {
+			const adminUser = {
+				_id: 'adminId',
+				email: 'adminCoder@coder.com',
+				role: 'admin',
+			};
+			return done(null, adminUser);
+		}
 		let user = await UserModel.findById(id);
 		done(null, user);
 	});
