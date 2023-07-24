@@ -1,9 +1,9 @@
 import environment from '../config/config.js';
 import mongoose from 'mongoose';
 
-const {mongoUrl} = environment;
+const {MONGO_URL} = environment;
 
-const atlasURI = mongoUrl;
+const atlasURI = MONGO_URL;
 
 mongoose.connect(atlasURI, {
 	useNewUrlParser: true,

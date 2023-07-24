@@ -15,7 +15,7 @@ import routerProducts from './routes/products.routes.js';
 import session from 'express-session';
 import viewsRouter from './routes/views.routes.js';
 
-const {port, mongoUrl, sessionSecret} = environment;
+const {PORT, MONGO_URL, SESSION_SECRET} = environment;
 
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
@@ -29,11 +29,11 @@ iniPassport();
 
 app.use(
 	session({
-		secret: sessionSecret,
+		secret: SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
 		store: MongoStore.create({
-			mongoUrl: mongoUrl,
+			mongoUrl: MONGO_URL,
 			ttl: 86400 * 7,
 		}),
 	}),
@@ -62,6 +62,6 @@ app.get('*', (req, res) => {
 	});
 });
 
-app.listen(port, () => {
-	console.log(`Server listening at http://localhost:${port}`);
+app.listen(PORT, () => {
+	console.log(`Server listening at http://localhost:${PORT}`);
 });
