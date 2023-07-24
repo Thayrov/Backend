@@ -1,5 +1,7 @@
-import {mongoUrl} from '../config/env.js';
+import environment from '../config/config.js';
 import mongoose from 'mongoose';
+
+const {mongoUrl} = environment;
 
 const atlasURI = mongoUrl;
 

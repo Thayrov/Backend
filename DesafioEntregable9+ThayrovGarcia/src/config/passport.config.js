@@ -1,11 +1,13 @@
 import {createHash, isValidPassword} from './bcrypt.js';
-import {githubClientID, githubClientSecret} from './env.js';
 
 import {Strategy as GitHubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
 import UserModel from '../dao/models/user.model.js';
+import environment from './config.js';
 import fetch from 'node-fetch';
 import passport from 'passport';
+
+const {githubClientID, githubClientSecret} = environment;
 
 export default function iniPassport() {
 	// Local Login Strategy
