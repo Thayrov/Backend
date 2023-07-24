@@ -7,7 +7,7 @@ import environment from './config.js';
 import fetch from 'node-fetch';
 import passport from 'passport';
 
-const {githubClientID, githubClientSecret} = environment;
+const {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} = environment;
 
 export default function iniPassport() {
 	// Local Login Strategy
@@ -89,8 +89,8 @@ export default function iniPassport() {
 		'github',
 		new GitHubStrategy(
 			{
-				clientID: githubClientID,
-				clientSecret: githubClientSecret,
+				clientID: GITHUB_CLIENT_ID,
+				clientSecret: GITHUB_CLIENT_SECRET,
 				callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
 			},
 			async (accessToken, _, profile, done) => {
