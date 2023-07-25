@@ -92,3 +92,32 @@ export const getCurrentUser = (req, res) => {
 			.json({message: 'Error getting current user', error: err.message});
 	}
 };
+
+export const githubLogin = passport.authenticate('github', {
+	scope: ['user:email'],
+});
+
+export const githubCallback = (req, res, next) => {
+	passport.authenticate(
+		'github',
+		{failureRedirect: '/login'},
+		(err, user, info) => {
+			if (err) {
+				console.log('Error during GitHub authentication:', err);
+				return next(err);
+			}
+			if (!user) {
+				console.log('No user returned from GitHub authentication');
+				return res.redirect('/login');
+			}
+			req.logIn(user, function (err) {
+				if (err) {
+					console.log('Error logging in user:', err);
+					return next(err);
+				}
+				console.log('User logged in successfully via GitHub:', user);
+				return res.redirect('/view/products');
+			});
+		},
+	)(req, res, next);
+};
