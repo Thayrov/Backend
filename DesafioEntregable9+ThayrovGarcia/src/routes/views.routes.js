@@ -1,19 +1,20 @@
-import {
-	getViewAllProducts,
-	getViewProductById,
-} from '../controllers/products.controller.js';
-import {
+import {isAdmin, isAuthenticated} from '../middlewares/auth.middleware.js';
+
+import AuthController from '../controllers/auth.controller.js';
+import ProductsController from '../controllers/products.controller.js';
+import express from 'express';
+
+const viewsRouter = express.Router();
+
+const {getViewAllProducts, getViewProductById} = ProductsController;
+
+const {
 	handleLogout,
 	renderAdmin,
 	renderLoginForm,
 	renderProfile,
 	renderRegisterForm,
-} from '../controllers/auth.controller.js';
-import {isAdmin, isAuthenticated} from '../middlewares/auth.middleware.js';
-
-import express from 'express';
-
-const viewsRouter = express.Router();
+} = AuthController;
 
 viewsRouter.get('/view/products/', isAuthenticated, getViewAllProducts);
 viewsRouter.get('/view/products/:pid', isAuthenticated, getViewProductById);
@@ -23,4 +24,5 @@ viewsRouter.get('/register', renderRegisterForm);
 viewsRouter.get('/profile', isAuthenticated, renderProfile);
 viewsRouter.get('/admin', isAdmin, renderAdmin);
 viewsRouter.get('/logout', handleLogout);
+
 export default viewsRouter;

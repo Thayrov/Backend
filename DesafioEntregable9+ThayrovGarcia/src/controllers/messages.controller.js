@@ -1,12 +1,18 @@
-import * as messageService from '../services/messages.service.js';
+import MessageService from '../services/messages.service.js';
 
-export const getAllMessages = async (req, res) => {
-	const messages = await messageService.getAllMessages();
-	res.send(messages);
-};
+const messageService = new MessageService();
 
-export const createMessage = async (req, res) => {
-	const messageData = req.body;
-	const newMessage = await messageService.createMessage(messageData);
-	res.send(newMessage);
-};
+class MessagesController {
+	async getAllMessages(req, res) {
+		const messages = await messageService.getAllMessages();
+		res.send(messages);
+	}
+
+	async createMessage(req, res) {
+		const messageData = req.body;
+		const newMessage = await messageService.createMessage(messageData);
+		res.send(newMessage);
+	}
+}
+
+export default new MessagesController();
