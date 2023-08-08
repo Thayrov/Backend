@@ -1,12 +1,14 @@
 import AuthService from '../services/auth.service.js';
+import {DAOFactory} from '../dao/factory.js';
 import {Strategy as GitHubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
-import UserModel from '../dao/models/user.model.js';
 import environment from './config.js';
 import passport from 'passport';
 
 const {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} = environment;
 const {loginUser, registerUser, githubAuth} = AuthService;
+const userDAO = DAOFactory('user');
+
 export default function iniPassport() {
 	passport.use(
 		'login',
@@ -87,7 +89,7 @@ export default function iniPassport() {
 			};
 			return done(null, adminUser);
 		}
-		let user = await UserModel.findById(id);
+		let user = await userDAO.findById(id);
 		done(null, user);
 	});
 }

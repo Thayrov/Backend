@@ -16,5 +16,7 @@ export const configureSession = () => {
 				ttl: 86400 * 7,
 			}),
 		});
+	} else {
+		return (req, res, next) => next();
 	}
 };

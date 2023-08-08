@@ -1,4 +1,5 @@
 import authRouter from './routes/auth.routes.js';
+import {configureSession} from './config/session.config.js';
 import cookieParser from 'cookie-parser';
 import environment from './config/config.js';
 import {errorRouter} from './routes/error.routes.js';
