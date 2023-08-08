@@ -2,7 +2,7 @@ import AuthService from '../services/auth.service.js';
 import {DAOFactory} from '../dao/factory.js';
 import {Strategy as GitHubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
-import environment from './config.js';
+import environment from './enviroment.config.js';
 import passport from 'passport';
 
 const {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} = environment;

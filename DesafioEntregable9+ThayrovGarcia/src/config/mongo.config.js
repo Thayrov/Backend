@@ -1,4 +1,4 @@
-import environment from './config.js';
+import environment from './enviroment.config.js';
 import mongoose from 'mongoose';
 
 const {MONGO_URL} = environment;

@@ -1,5 +1,5 @@
 import MongoStore from 'connect-mongo';
-import environment from './config.js';
+import environment from './enviroment.config.js';
 import {isMongoConnected} from '../dao/factory.js';
 import session from 'express-session';
 

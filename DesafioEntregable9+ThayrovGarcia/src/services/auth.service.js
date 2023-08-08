@@ -1,4 +1,4 @@
-import {createHash, isValidPassword} from '../config/bcrypt.js';
+import {createHash, isValidPassword} from '../config/bcrypt.config.js';
 
 import {DAOFactory} from '../dao/factory.js';
 import fetch from 'node-fetch';
