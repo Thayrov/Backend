@@ -1,11 +1,15 @@
 import {createHash, isValidPassword} from '../config/bcrypt.js';
 
-import UserModel from '../dao/models/user.model.js';
+import {DAOFactory} from '../dao/factory.js';
 import fetch from 'node-fetch';
 
 class AuthService {
+	constructor() {
+		this.userDAO = DAOFactory('user');
+	}
+
 	async loginUser(username, password) {
-		const user = await UserModel.findOne({email: username});
+		const user = await this.userDAO.findOne({email: username});
 		if (!user || !isValidPassword(password, user.password)) {
 			throw new Error('Invalid credentials');
 		}
@@ -13,14 +17,13 @@ class AuthService {
 	}
 
 	async registerUser(user) {
-		const existingUser = await UserModel.findOne({email: user.email});
+		const existingUser = await this.userDAO.findOne({email: user.email});
 		if (existingUser) {
 			throw new Error('User already exists');
 		}
 		const hashedPassword = await createHash(user.password);
 		user.password = hashedPassword;
-		const newUser = new UserModel(user);
-		return await newUser.save();
+		return await this.userDAO.create(user);
 	}
 
 	async githubAuth(accessToken, profile) {
@@ -39,7 +42,7 @@ class AuthService {
 		}
 		profile.email = emailDetail.email;
 
-		let user = await UserModel.findOne({email: profile.email});
+		let user = await this.userDAO.findOne({email: profile.email});
 		if (!user) {
 			const newUser = {
 				email: profile.email,
@@ -49,7 +52,7 @@ class AuthService {
 				role: 'user',
 				password: createHash(accessToken.substring(0, 10)),
 			};
-			user = await UserModel.create(newUser);
+			user = await this.userDAO.create(newUser);
 			console.log('User Registration successful');
 		} else {
 			console.log('User already exists');

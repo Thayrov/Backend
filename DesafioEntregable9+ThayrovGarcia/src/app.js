@@ -1,7 +1,5 @@
-import MongoStore from 'connect-mongo';
 import authRouter from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
-import db from './dao/db.js';
 import environment from './config/config.js';
 import {errorRouter} from './routes/error.routes.js';
 import express from 'express';
@@ -12,10 +10,9 @@ import passport from 'passport';
 import path from 'path';
 import routerCarts from './routes/carts.routes.js';
 import routerProducts from './routes/products.routes.js';
-import session from 'express-session';
 import viewsRouter from './routes/views.routes.js';
 
-const {PORT, MONGO_URL, SESSION_SECRET} = environment;
+const {PORT} = environment;
 
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
@@ -27,17 +24,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 iniPassport();
 
-app.use(
-	session({
-		secret: SESSION_SECRET,
-		resave: false,
-		saveUninitialized: false,
-		store: MongoStore.create({
-			mongoUrl: MONGO_URL,
-			ttl: 86400 * 7,
-		}),
-	}),
-);
+app.use(configureSession());
 
 app.use(passport.initialize());
 app.use(passport.session());

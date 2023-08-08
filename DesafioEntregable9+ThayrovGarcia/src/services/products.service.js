@@ -1,40 +1,20 @@
-import ProductModel from '../dao/models/products.model.js';
-import mongoosePaginate from 'mongoose-paginate-v2';
+import {DAOFactory} from '../dao/factory.js';
 
 export class ProductService {
+	constructor() {
+		this.productDAO = DAOFactory('products');
+	}
+
 	validateCreateProduct(productData) {
-		const {
-			title,
-			description,
-			code,
-			price,
-			stock,
-			thumbnail,
-		} = // , category
-			productData;
-		if (
-			!title ||
-			!description ||
-			!code ||
-			!price ||
-			!stock ||
-			// !category ||
-			!thumbnail
-		) {
+		const {title, description, code, price, stock, thumbnail} = productData;
+		if (!title || !description || !code || !price || !stock || !thumbnail) {
 			console.log('validation error: Please complete all fields.');
 			throw 'Validation Error';
 		}
 	}
+
 	validateUpdateProduct(id, updatedFields) {
-		const {
-			title,
-			description,
-			code,
-			price,
-			stock,
-			thumbnail,
-		} = // , category
-			updatedFields;
+		const {title, description, code, price, stock, thumbnail} = updatedFields;
 		if (
 			!id ||
 			!title ||
@@ -42,13 +22,13 @@ export class ProductService {
 			!code ||
 			!price ||
 			!stock ||
-			// !category ||
 			!thumbnail
 		) {
 			console.log('validation error: please complete required data.');
 			throw 'Validation Error';
 		}
 	}
+
 	validateId(id) {
 		if (!id) {
 			console.log('validation error: ID not available.');
@@ -58,18 +38,7 @@ export class ProductService {
 
 	async getAllProducts({limit = 5, page = 1, sort, query}) {
 		try {
-			const options = {
-				page: parseInt(page),
-				limit: parseInt(limit),
-				sort: sort ? {price: sort} : undefined,
-			};
-
-			const queryObj = query
-				? {$or: [{category: query}, {availability: query}]}
-				: {};
-
-			const products = await ProductModel.paginate(queryObj, options);
-			return products;
+			return await this.productDAO.findAll({limit, page, sort, query});
 		} catch (error) {
 			console.error(error);
 			throw error;
@@ -79,8 +48,7 @@ export class ProductService {
 	async getProductById(id) {
 		this.validateId(id);
 		try {
-			const product = await ProductModel.findById(id);
-			return product;
+			return await this.productDAO.findById(id);
 		} catch (error) {
 			console.error(error);
 			throw error;
@@ -89,8 +57,7 @@ export class ProductService {
 
 	async getProductByCode(code) {
 		try {
-			const product = await ProductModel.findOne({code});
-			return product;
+			return await this.productDAO.findByCode(code);
 		} catch (error) {
 			console.error(error);
 			throw error;
@@ -100,8 +67,7 @@ export class ProductService {
 	async createProduct(productData) {
 		this.validateCreateProduct(productData);
 		try {
-			const newProduct = await ProductModel.create(productData);
-			return newProduct;
+			return await this.productDAO.create(productData);
 		} catch (error) {
 			console.error(error);
 			throw error;
@@ -111,12 +77,7 @@ export class ProductService {
 	async updateProduct(id, updatedFields) {
 		this.validateUpdateProduct(id, updatedFields);
 		try {
-			const updatedProduct = await ProductModel.findByIdAndUpdate(
-				id,
-				updatedFields,
-				{new: true},
-			);
-			return updatedProduct;
+			return await this.productDAO.update(id, updatedFields);
 		} catch (error) {
 			console.error(error);
 			throw error;
@@ -125,11 +86,12 @@ export class ProductService {
 
 	async deleteProduct(id) {
 		try {
-			const deletedProduct = await ProductModel.findByIdAndDelete(id);
-			return deletedProduct;
+			return await this.productDAO.delete(id);
 		} catch (error) {
 			console.error(error);
 			throw error;
 		}
 	}
 }
+
+export default new ProductService();

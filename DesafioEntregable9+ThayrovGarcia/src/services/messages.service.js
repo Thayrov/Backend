@@ -1,15 +1,27 @@
-import Message from '../dao/models/messages.model.js';
+import {DAOFactory} from '../dao/factory.js';
 
 class MessageService {
-	getAllMessages = async () => {
-		const messages = await Message.find();
-		return messages;
-	};
+	constructor() {
+		this.messageDAO = DAOFactory('messages');
+	}
 
-	createMessage = async messageData => {
-		const newMessage = await Message.create(messageData);
-		return newMessage;
-	};
+	async getAllMessages() {
+		try {
+			return await this.messageDAO.getAll();
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
+
+	async createMessage(messageData) {
+		try {
+			return await this.messageDAO.create(messageData);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
 }
 
-export default MessageService;
+export default new MessageService();
