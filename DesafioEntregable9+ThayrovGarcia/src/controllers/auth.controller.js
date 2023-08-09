@@ -1,4 +1,5 @@
 import AuthService from '../services/auth.service.js';
+import {UserResponseDTO} from '../dto/user.dto.js';
 import passport from 'passport';
 
 class AuthController {
@@ -84,8 +85,7 @@ class AuthController {
 			if (!user) {
 				return res.status(401).json({message: 'User not authenticated'});
 			}
-			user = user.toObject();
-			delete user.password;
+			user = new UserResponseDTO(user.toObject());
 			return res.status(200).json({user});
 		} catch (err) {
 			return res
