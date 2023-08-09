@@ -1,10 +1,33 @@
 import * as fs from 'fs/promises';
 
 export class ProductManager {
+	static #instance;
 	constructor(path) {
+		if (ProductManager.#instance) {
+			console.log('Already connected');
+			return ProductManager.#instance;
+		}
 		this.path = path;
 		this.products = [];
 		this.lastId = 0;
+		this.connect();
+		ProductManager.#instance = this;
+		return this;
+	}
+
+	async connect() {
+		try {
+			const data = await fs.readFile(this.path, {encoding: 'utf-8'});
+			if (data) {
+				this.products = JSON.parse(data);
+				this.lastId =
+					this.products.length > 0
+						? this.products[this.products.length - 1].id
+						: 0;
+			}
+		} catch (error) {
+			console.error(`Error initializing Product Manager: ${error.message}`);
+		}
 	}
 
 	async initialize() {

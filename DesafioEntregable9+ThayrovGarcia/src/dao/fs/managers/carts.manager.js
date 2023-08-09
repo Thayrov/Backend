@@ -1,10 +1,31 @@
 import * as fs from 'fs/promises';
 
 export class CartManager {
+	static #instance;
 	constructor(path) {
+		if (CartManager.#instance) {
+			console.log('Already connected to CartManager');
+			return CartManager.#instance;
+		}
 		this.path = path;
 		this.carts = [];
 		this.lastId = 0;
+		this.connect();
+		CartManager.#instance = this;
+		return this;
+	}
+
+	async connect() {
+		try {
+			const data = await fs.readFile(this.path, {encoding: 'utf-8'});
+			if (data) {
+				this.carts = JSON.parse(data);
+				this.lastId =
+					this.carts.length > 0 ? this.carts[this.carts.length - 1].id : 0;
+			}
+		} catch (error) {
+			console.error(`Error initializing Cart Manager: ${error.message}`);
+		}
 	}
 
 	async initialize() {

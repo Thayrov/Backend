@@ -17,6 +17,10 @@ export const DAOFactory = async entity => {
 			DAO = await import(`./memory/${entity}.memory.js`);
 			break;
 
+		case 'FS':
+			DAO = await import(`./fs/${entity}.fs.js`);
+			break;
+
 		default:
 			throw new Error('Persistence method not supported');
 	}
