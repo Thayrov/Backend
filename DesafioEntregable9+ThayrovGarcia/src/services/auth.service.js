@@ -4,8 +4,8 @@ import {DAOFactory} from '../dao/factory.js';
 import fetch from 'node-fetch';
 
 class AuthService {
-	constructor() {
-		this.userDAO = DAOFactory('user');
+	async init() {
+		this.userDAO = await DAOFactory('user');
 	}
 
 	async loginUser(username, password) {
@@ -61,4 +61,12 @@ class AuthService {
 	}
 }
 
-export default new AuthService();
+let authService;
+
+export const initializeAuthService = async () => {
+	if (!authService) {
+		authService = new AuthService();
+		await authService.init();
+	}
+	return authService;
+};

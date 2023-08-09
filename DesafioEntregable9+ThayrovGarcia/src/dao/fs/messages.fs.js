@@ -1,8 +1,17 @@
 import {MessageManager} from './managers/messages.manager.js';
 
-const messageManager = new MessageManager('./dao/fs/db/messages.json');
+class MessageFSDAO {
+	constructor() {
+		this.manager = new MessageManager('./dao/fs/db/messages.json');
+	}
 
-export default {
-	getAll: async () => messageManager.getAllMessages(),
-	create: async messageData => messageManager.createMessage(messageData),
-};
+	async getAll() {
+		return await this.manager.getAllMessages();
+	}
+
+	async create(messageData) {
+		return await this.manager.createMessage(messageData);
+	}
+}
+
+export default new MessageFSDAO();

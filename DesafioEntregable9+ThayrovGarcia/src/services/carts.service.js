@@ -1,9 +1,12 @@
 import {DAOFactory} from '../dao/factory.js';
-import {ProductService} from './products.service.js';
+import {initializeProductService} from './products.service.js';
+import {initializeTicketService} from './tickets.service.js';
 
 export class CartService {
-	constructor() {
-		this.cartDAO = DAOFactory('carts');
+	async init() {
+		this.cartDAO = await DAOFactory('carts');
+		this.productService = await initializeProductService();
+		this.ticketService = await initializeTicketService();
 	}
 
 	async createCart(cartData) {
@@ -26,7 +29,7 @@ export class CartService {
 
 	async addProductToCart(cartId, productId) {
 		try {
-			const productToAdd = await ProductService.getProductById(productId);
+			const productToAdd = await this.productService.getProductById(productId);
 			if (!productToAdd) {
 				throw new Error('Product not found');
 			}
@@ -92,6 +95,53 @@ export class CartService {
 			throw error;
 		}
 	}
+
+	async finalizePurchase(cartId, userEmail) {
+		try {
+			const cart = await this.getCartById(cartId);
+			let totalAmount = 0;
+			let unprocessedProducts = [];
+
+			for (let item of cart.products) {
+				const product = await this.productService.getProductById(item.product);
+				if (product.stock >= item.quantity) {
+					totalAmount += product.price * item.quantity;
+					product.stock -= item.quantity;
+					await this.productService.updateProduct(product._id, product);
+				} else {
+					unprocessedProducts.push(item.product);
+				}
+			}
+
+			const ticketData = {
+				amount: totalAmount,
+				purchaser: userEmail,
+			};
+
+			const ticket = await this.ticketService.createTicket(ticketData);
+
+			cart.products = cart.products.filter(item =>
+				unprocessedProducts.includes(item.product),
+			);
+			await this.updateCart(cartId, cart.products);
+
+			return {
+				ticket,
+				unprocessedProducts,
+			};
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	}
 }
 
-export default new CartService();
+let cartService;
+
+export const initializeCartService = async () => {
+	if (!cartService) {
+		cartService = new CartService();
+		await cartService.init();
+	}
+	return cartService;
+};

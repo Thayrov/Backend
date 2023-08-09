@@ -2,7 +2,6 @@ import environment from './enviroment.config.js';
 import mongoose from 'mongoose';
 
 const {MONGO_URL} = environment;
-
 export default class MongoSingleton {
 	static #mongoInstance;
 	static #MAX_RETRIES = 3;
@@ -17,6 +16,7 @@ export default class MongoSingleton {
 					dbName: 'ecommerce',
 				});
 				console.log('Connected to MongoDB');
+
 				return;
 			} catch (error) {
 				console.error('Failed to connect to MongoDB:', error);
@@ -36,5 +36,9 @@ export default class MongoSingleton {
 		this.#mongoInstance = new MongoSingleton();
 		await this.connectToDB();
 		return this.#mongoInstance;
+	}
+
+	static hasInstance() {
+		return !!this.#mongoInstance;
 	}
 }

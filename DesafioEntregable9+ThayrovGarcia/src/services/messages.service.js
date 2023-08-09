@@ -1,8 +1,8 @@
 import {DAOFactory} from '../dao/factory.js';
 
 class MessageService {
-	constructor() {
-		this.messageDAO = DAOFactory('messages');
+	async init() {
+		this.messageDAO = await DAOFactory('messages');
 	}
 
 	async getAllMessages() {
@@ -24,4 +24,12 @@ class MessageService {
 	}
 }
 
-export default new MessageService();
+let messageService;
+
+export const initializeMessageService = async () => {
+	if (!messageService) {
+		messageService = new MessageService();
+		await messageService.init();
+	}
+	return messageService;
+};

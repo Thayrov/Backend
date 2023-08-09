@@ -1,13 +1,17 @@
-import {ProductService} from '../services/products.service.js';
-
-const productService = new ProductService();
+import {initializeProductService} from '../services/products.service.js';
 
 class ProductsController {
+	constructor() {
+		this.productService = initializeProductService();
+	}
 	async getAllProducts(req, res) {
 		try {
 			const {limit = 5, ...query} = req.query;
 
-			const products = await productService.getAllProducts({limit, ...query});
+			const products = await this.productService.getAllProducts({
+				limit,
+				...query,
+			});
 
 			res.status(200).send({
 				status: 'Success',
@@ -43,7 +47,10 @@ class ProductsController {
 		try {
 			const {limit = 5, ...query} = req.query;
 
-			const products = await productService.getAllProducts({limit, ...query});
+			const products = await this.productService.getAllProducts({
+				limit,
+				...query,
+			});
 
 			res.render('products', {
 				status: 'Success',
@@ -78,7 +85,7 @@ class ProductsController {
 	async getProductById(req, res) {
 		try {
 			const id = req.params.pid;
-			const product = await productService.getProductById(id);
+			const product = await this.productService.getProductById(id);
 			if (product) {
 				res.send({product});
 			} else {
@@ -93,7 +100,7 @@ class ProductsController {
 	async getViewProductById(req, res) {
 		try {
 			const id = req.params.pid;
-			const product = await productService.getProductById(id);
+			const product = await this.productService.getProductById(id);
 			if (product) {
 				res.render('product', {product});
 			} else {
@@ -108,7 +115,7 @@ class ProductsController {
 	async createProduct(req, res) {
 		try {
 			const productData = req.body;
-			const newProduct = await productService.createProduct(productData);
+			const newProduct = await this.productService.createProduct(productData);
 			res.send(newProduct);
 		} catch (error) {
 			console.error(error);
@@ -120,7 +127,7 @@ class ProductsController {
 		try {
 			const id = req.params.pid;
 			const updatedFields = req.body;
-			const updatedProduct = await productService.updateProduct(
+			const updatedProduct = await this.productService.updateProduct(
 				id,
 				updatedFields,
 			);
@@ -138,7 +145,7 @@ class ProductsController {
 	async deleteProduct(req, res) {
 		try {
 			const id = req.params.pid;
-			const deletedProduct = await productService.deleteProduct(id);
+			const deletedProduct = await this.productService.deleteProduct(id);
 			if (deletedProduct) {
 				res.send({message: `Product with id ${id} deleted successfully`});
 			} else {

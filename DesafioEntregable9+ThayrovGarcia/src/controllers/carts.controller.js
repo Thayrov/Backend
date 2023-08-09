@@ -1,8 +1,8 @@
-import {CartService} from '../services/carts.service.js';
+import {initializeCartService} from '../services/carts.service.js';
 
 class CartsController {
 	constructor() {
-		this.cartService = new CartService();
+		this.cartService = initializeCartService();
 	}
 
 	createCart = async (req, res) => {
@@ -102,6 +102,31 @@ class CartsController {
 			await this.cartService.clearCart(cartId);
 
 			res.status(200).json({message: 'Cart cleared successfully'});
+		} catch (error) {
+			console.error(error);
+			res.status(500).json({error: 'Internal server error'});
+		}
+	};
+
+	finalizePurchase = async (req, res) => {
+		try {
+			const cartId = req.params.cid;
+			const userEmail = req.user.email;
+
+			const result = await this.cartService.finalizePurchase(cartId, userEmail);
+
+			if (result.unprocessedProducts.length > 0) {
+				res.status(400).json({
+					message:
+						'Some products could not be processed due to insufficient stock.',
+					unprocessedProducts: result.unprocessedProducts,
+				});
+			} else {
+				res.json({
+					message: 'Purchase finalized successfully',
+					ticket: result.ticket,
+				});
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json({error: 'Internal server error'});

@@ -1,16 +1,37 @@
 import {CartManager} from './managers/carts.manager.js';
 
-const cartManager = new CartManager('./dao/fs/db/carts.json');
+class CartFSDAO {
+	constructor() {
+		this.manager = new CartManager('./dao/fs/db/carts.json');
+	}
 
-export default {
-	findAll: async () => cartManager.getCarts(),
-	findById: async id => cartManager.getCartById(id),
-	create: async cartData => cartManager.createCart(cartData),
-	update: async (id, updatedFields) =>
-		cartManager.updateCart(id, updatedFields),
-	delete: async id => cartManager.deleteCart(id),
-	addProduct: async (cartId, productData) =>
-		cartManager.addProductToCart(cartId, productData.product),
-	deleteProduct: async (cartId, productId) =>
-		cartManager.deleteProductFromCart(cartId, productId),
-};
+	async findAll() {
+		return await this.manager.getCarts();
+	}
+
+	async findById(id) {
+		return await this.manager.getCartById(id);
+	}
+
+	async create(cartData) {
+		return await this.manager.createCart(cartData);
+	}
+
+	async update(id, updatedFields) {
+		return await this.manager.updateCart(id, updatedFields);
+	}
+
+	async delete(id) {
+		return await this.manager.deleteCart(id);
+	}
+
+	async addProduct(cartId, productData) {
+		return await this.manager.addProductToCart(cartId, productData.product);
+	}
+
+	async deleteProduct(cartId, productId) {
+		return await this.manager.deleteProductFromCart(cartId, productId);
+	}
+}
+
+export default new CartFSDAO();

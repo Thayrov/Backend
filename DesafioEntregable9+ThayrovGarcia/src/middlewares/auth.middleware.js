@@ -10,9 +10,23 @@ export const isAuthenticated = (req, res, next) => {
 };
 
 export const isAdmin = (req, res, next) => {
-	if (req.session.user && req.session.user.role === 'admin') {
+	isAuthenticated(req, res, () => {
+		if (req.session.user && req.session.user.role === 'admin') {
+			return next();
+		} else {
+			return res
+				.status(403)
+				.send('Access denied. Only admins can perform this action.');
+		}
+	});
+};
+
+export const isUser = (req, res, next) => {
+	if (req.session.user && req.session.user.role === 'user') {
 		return next();
 	} else {
-		return res.redirect('/login');
+		return res
+			.status(403)
+			.send('Access denied. Only users can perform this action.');
 	}
 };

@@ -1,8 +1,8 @@
 import {DAOFactory} from '../dao/factory.js';
 
 export class ProductService {
-	constructor() {
-		this.productDAO = DAOFactory('products');
+	async init() {
+		this.productDAO = await DAOFactory('products');
 	}
 
 	validateCreateProduct(productData) {
@@ -94,4 +94,12 @@ export class ProductService {
 	}
 }
 
-export default new ProductService();
+let productService;
+
+export const initializeProductService = async () => {
+	if (!productService) {
+		productService = new ProductService();
+		await productService.init();
+	}
+	return productService;
+};

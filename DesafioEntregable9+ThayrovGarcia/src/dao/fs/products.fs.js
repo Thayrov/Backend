@@ -1,13 +1,33 @@
 import {ProductManager} from './managers/products.manager.js';
 
-const productManager = new ProductManager('./dao/fs/db/products.json');
+class ProductFSDAO {
+	constructor() {
+		this.manager = new ProductManager('./dao/fs/db/products.json');
+	}
 
-export default {
-	findAll: async ({limit}) => productManager.getProducts(limit),
-	findById: async id => productManager.getProductById(id),
-	create: async productData => productManager.addProduct(productData),
-	update: async (id, updatedFields) =>
-		productManager.updateProduct(id, updatedFields),
-	delete: async id => productManager.deleteProduct(id),
-	findByCode: async code => productManager.getProductByCode(code),
-};
+	async findAll({limit}) {
+		return await this.manager.getProducts(limit);
+	}
+
+	async findById(id) {
+		return await this.manager.getProductById(id);
+	}
+
+	async create(productData) {
+		return await this.manager.addProduct(productData);
+	}
+
+	async update(id, updatedFields) {
+		return await this.manager.updateProduct(id, updatedFields);
+	}
+
+	async delete(id) {
+		return await this.manager.deleteProduct(id);
+	}
+
+	async findByCode(code) {
+		return await this.manager.getProductByCode(code);
+	}
+}
+
+export default new ProductFSDAO();

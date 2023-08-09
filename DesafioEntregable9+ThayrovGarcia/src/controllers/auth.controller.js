@@ -1,4 +1,3 @@
-import AuthService from '../services/auth.service.js';
 import {UserResponseDTO} from '../dto/user.dto.js';
 import passport from 'passport';
 

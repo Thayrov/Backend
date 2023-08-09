@@ -1,22 +1,21 @@
-import AuthService from '../services/auth.service.js';
 import {DAOFactory} from '../dao/factory.js';
 import {Strategy as GitHubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
 import environment from './enviroment.config.js';
+import {initializeAuthService} from '../services/auth.service.js';
 import passport from 'passport';
 
 const {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} = environment;
-const {loginUser, registerUser, githubAuth} = AuthService;
-const userDAO = DAOFactory('user');
-
-export default function iniPassport() {
+export default async function iniPassport() {
+	const userDAO = await DAOFactory('user');
+	const authService = await initializeAuthService();
 	passport.use(
 		'login',
 		new LocalStrategy(
 			{usernameField: 'email'},
 			async (username, password, done) => {
 				try {
-					const user = await loginUser(username, password);
+					const user = await authService.loginUser(username, password);
 					return done(null, user);
 				} catch (err) {
 					return done(err);
@@ -43,7 +42,7 @@ export default function iniPassport() {
 						role: 'user',
 						password,
 					};
-					const userCreated = await registerUser(user);
+					const userCreated = await authService.registerUser(user);
 					return done(null, userCreated);
 				} catch (e) {
 					return done(e);
@@ -63,7 +62,7 @@ export default function iniPassport() {
 			},
 			async (accessToken, _, profile, done) => {
 				try {
-					const user = await githubAuth(accessToken, profile);
+					const user = await authService.githubAuth(accessToken, profile);
 					return done(null, user);
 				} catch (e) {
 					console.log('Error in GitHub auth');

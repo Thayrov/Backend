@@ -1,12 +1,12 @@
+import MongoSingleton from './mongo.config.js';
 import MongoStore from 'connect-mongo';
 import environment from './enviroment.config.js';
-import {isMongoConnected} from '../dao/factory.js';
 import session from 'express-session';
 
 const {MONGO_URL, SESSION_SECRET} = environment;
-
 export const configureSession = () => {
-	if (isMongoConnected) {
+	console.log('MongoSingleton has instance:', MongoSingleton.hasInstance());
+	if (MongoSingleton.hasInstance()) {
 		return session({
 			secret: SESSION_SECRET,
 			resave: false,

@@ -1,16 +1,17 @@
-import MessageService from '../services/messages.service.js';
-
-const messageService = new MessageService();
+import {initializeMessageService} from '../services/messages.service.js';
 
 class MessagesController {
+	constructor() {
+		this.messageService = initializeMessageService();
+	}
 	async getAllMessages(req, res) {
-		const messages = await messageService.getAllMessages();
+		const messages = await this.messageService.getAllMessages();
 		res.send(messages);
 	}
 
 	async createMessage(req, res) {
 		const messageData = req.body;
-		const newMessage = await messageService.createMessage(messageData);
+		const newMessage = await this.messageService.createMessage(messageData);
 		res.send(newMessage);
 	}
 }
