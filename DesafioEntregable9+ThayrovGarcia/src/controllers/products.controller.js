@@ -1,3 +1,5 @@
+import CustomError from '../services/errors/custom-error.js';
+import EErrors from '../services/errors/enums.js';
 import {initializeProductService} from '../services/products.service.js';
 
 class ProductsController {
@@ -37,9 +39,15 @@ class ProductsController {
 					? `/api/products?limit=${limit}&page=${products.nextPage}`
 					: null,
 			});
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({status: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'GetAllProductsError',
+					cause: err,
+					message: 'Error retrieving all products',
+					code: EErrors.DATABASE_ERROR,
+				}),
+			);
 		}
 	}
 
@@ -76,9 +84,15 @@ class ProductsController {
 					? `/view/products?limit=${limit}&page=${products.nextPage}`
 					: null,
 			});
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({status: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'ViewAllProductsError',
+					cause: err,
+					message: 'Error viewing all products',
+					code: EErrors.DATABASE_ERROR,
+				}),
+			);
 		}
 	}
 
@@ -91,9 +105,15 @@ class ProductsController {
 			} else {
 				res.status(404).send({error: 'Product not found'});
 			}
-		} catch (error) {
-			console.error(error);
-			res.status(500).send({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'GetProductByIdError',
+					cause: err,
+					message: 'Error retrieving product by ID',
+					code: EErrors.PRODUCT_NOT_FOUND,
+				}),
+			);
 		}
 	}
 
@@ -106,9 +126,15 @@ class ProductsController {
 			} else {
 				res.status(404).send({error: 'Product not found'});
 			}
-		} catch (error) {
-			console.error(error);
-			res.status(500).send({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'ViewProductByIdError',
+					cause: err,
+					message: 'Error viewing product by ID',
+					code: EErrors.PRODUCT_NOT_FOUND,
+				}),
+			);
 		}
 	}
 
@@ -117,9 +143,15 @@ class ProductsController {
 			const productData = req.body;
 			const newProduct = await this.productService.createProduct(productData);
 			res.send(newProduct);
-		} catch (error) {
-			console.error(error);
-			res.status(500).send({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'CreateProductError',
+					cause: err,
+					message: 'Error creating product',
+					code: EErrors.PRODUCT_VALIDATION_ERROR,
+				}),
+			);
 		}
 	}
 
@@ -136,9 +168,15 @@ class ProductsController {
 			} else {
 				res.status(404).send({error: 'Product not found'});
 			}
-		} catch (error) {
-			console.error(error);
-			res.status(500).send({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'UpdateProductError',
+					cause: err,
+					message: 'Error updating product',
+					code: EErrors.PRODUCT_VALIDATION_ERROR,
+				}),
+			);
 		}
 	}
 
@@ -151,9 +189,15 @@ class ProductsController {
 			} else {
 				res.status(404).send({error: 'Product not found'});
 			}
-		} catch (error) {
-			console.error(error);
-			res.status(500).send({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'DeleteProductError',
+					cause: err,
+					message: 'Error deleting product',
+					code: EErrors.DATABASE_ERROR,
+				}),
+			);
 		}
 	}
 }

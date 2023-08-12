@@ -1,3 +1,5 @@
+import CustomError from '../services/errors/custom-error.js';
+import EErrors from '../services/errors/enums.js';
 import {initializeCartService} from '../services/carts.service.js';
 
 class CartsController {
@@ -10,9 +12,15 @@ class CartsController {
 			const cartData = req.body;
 			const newCart = await this.cartService.createCart(cartData);
 			res.status(201).json(newCart);
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'CreateCartError',
+					cause: err,
+					message: 'Error creating cart',
+					code: EErrors.CART_VALIDATION_ERROR,
+				}),
+			);
 		}
 	};
 
@@ -23,11 +31,24 @@ class CartsController {
 			if (cart) {
 				res.json(cart);
 			} else {
-				res.status(404).json({error: 'Cart not found'});
+				return next(
+					CustomError.createError({
+						name: 'CartNotFoundError',
+						cause: null,
+						message: 'Cart not found',
+						code: EErrors.CART_NOT_FOUND,
+					}),
+				);
 			}
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'GetCartByIdError',
+					cause: err,
+					message: 'Error retrieving cart by ID',
+					code: EErrors.DATABASE_ERROR,
+				}),
+			);
 		}
 	};
 
@@ -44,11 +65,24 @@ class CartsController {
 			if (updatedCart) {
 				res.json(updatedCart);
 			} else {
-				res.status(404).json({error: 'Cart or Product not found'});
+				return next(
+					CustomError.createError({
+						name: 'ProductCartError',
+						cause: null,
+						message: 'Cart or Product not found',
+						code: EErrors.PRODUCT_NOT_IN_CART,
+					}),
+				);
 			}
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'AddProductToCartError',
+					cause: err,
+					message: 'Error adding product to cart',
+					code: EErrors.DATABASE_ERROR,
+				}),
+			);
 		}
 	};
 
@@ -60,9 +94,15 @@ class CartsController {
 			await this.cartService.deleteProductFromCart(cartId, productId);
 
 			res.status(200).json({message: 'Product deleted from cart successfully'});
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'DeleteProductFromCartError',
+					cause: err,
+					message: 'Error deleting product from cart',
+					code: EErrors.DATABASE_ERROR,
+				}),
+			);
 		}
 	};
 
@@ -74,9 +114,15 @@ class CartsController {
 			await this.cartService.updateCart(cartId, products);
 
 			res.status(200).json({message: 'Cart updated successfully'});
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'UpdateCartError',
+					cause: err,
+					message: 'Error updating cart',
+					code: EErrors.CART_VALIDATION_ERROR,
+				}),
+			);
 		}
 	};
 
@@ -89,9 +135,15 @@ class CartsController {
 			await this.cartService.updateProductQuantity(cartId, productId, quantity);
 
 			res.status(200).json({message: 'Product quantity updated successfully'});
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'UpdateProductQuantityError',
+					cause: err,
+					message: 'Error updating product quantity in cart',
+					code: EErrors.CART_VALIDATION_ERROR,
+				}),
+			);
 		}
 	};
 
@@ -102,9 +154,15 @@ class CartsController {
 			await this.cartService.clearCart(cartId);
 
 			res.status(200).json({message: 'Cart cleared successfully'});
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'ClearCartError',
+					cause: err,
+					message: 'Error clearing cart',
+					code: EErrors.DATABASE_ERROR,
+				}),
+			);
 		}
 	};
 
@@ -127,9 +185,15 @@ class CartsController {
 					ticket: result.ticket,
 				});
 			}
-		} catch (error) {
-			console.error(error);
-			res.status(500).json({error: 'Internal server error'});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'FinalizePurchaseError',
+					cause: err,
+					message: 'Error finalizing purchase',
+					code: EErrors.DATABASE_ERROR,
+				}),
+			);
 		}
 	};
 }

@@ -2,6 +2,7 @@ import authRouter from './routes/auth.routes.js';
 import {configureSession} from './config/session.config.js';
 import cookieParser from 'cookie-parser';
 import environment from './config/enviroment.config.js';
+import errorHandler from './middlewares/error.middleware.js';
 import {errorRouter} from './routes/error.routes.js';
 import express from 'express';
 import {fileURLToPath} from 'url';
@@ -40,7 +41,6 @@ app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCarts);
 app.use('/api/sessions', authRouter);
 app.use('/', viewsRouter);
-app.use('/error', errorRouter);
 
 app.get('*', (req, res) => {
 	return res.status(404).json({
@@ -49,6 +49,8 @@ app.get('*', (req, res) => {
 		data: {},
 	});
 });
+app.use('/error', errorRouter);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
 	console.log(`Server listening at http://localhost:${PORT}`);

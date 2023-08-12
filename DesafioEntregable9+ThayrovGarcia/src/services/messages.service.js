@@ -6,21 +6,11 @@ class MessageService {
 	}
 
 	async getAllMessages() {
-		try {
-			return await this.messageDAO.getAll();
-		} catch (error) {
-			console.error(error);
-			throw error;
-		}
+		return await this.messageDAO.getAll();
 	}
 
 	async createMessage(messageData) {
-		try {
-			return await this.messageDAO.create(messageData);
-		} catch (error) {
-			console.error(error);
-			throw error;
-		}
+		return await this.messageDAO.create(messageData);
 	}
 }
 

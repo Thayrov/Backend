@@ -37,60 +37,33 @@ export class ProductService {
 	}
 
 	async getAllProducts({limit = 5, page = 1, sort, query}) {
-		try {
-			return await this.productDAO.findAll({limit, page, sort, query});
-		} catch (error) {
-			console.error(error);
-			throw error;
-		}
+		return await this.productDAO.findAll({limit, page, sort, query});
 	}
 
 	async getProductById(id) {
 		this.validateId(id);
-		try {
-			return await this.productDAO.findById(id);
-		} catch (error) {
-			console.error(error);
-			throw error;
-		}
+
+		return await this.productDAO.findById(id);
 	}
 
 	async getProductByCode(code) {
-		try {
-			return await this.productDAO.findByCode(code);
-		} catch (error) {
-			console.error(error);
-			throw error;
-		}
+		return await this.productDAO.findByCode(code);
 	}
 
 	async createProduct(productData) {
 		this.validateCreateProduct(productData);
-		try {
-			return await this.productDAO.create(productData);
-		} catch (error) {
-			console.error(error);
-			throw error;
-		}
+
+		return await this.productDAO.create(productData);
 	}
 
 	async updateProduct(id, updatedFields) {
 		this.validateUpdateProduct(id, updatedFields);
-		try {
-			return await this.productDAO.update(id, updatedFields);
-		} catch (error) {
-			console.error(error);
-			throw error;
-		}
+
+		return await this.productDAO.update(id, updatedFields);
 	}
 
 	async deleteProduct(id) {
-		try {
-			return await this.productDAO.delete(id);
-		} catch (error) {
-			console.error(error);
-			throw error;
-		}
+		return await this.productDAO.delete(id);
 	}
 }
 

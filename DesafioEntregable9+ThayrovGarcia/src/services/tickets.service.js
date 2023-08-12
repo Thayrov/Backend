@@ -6,12 +6,7 @@ class TicketService {
 	}
 
 	async createTicket(ticketData) {
-		try {
-			return await this.ticketDAO.create(ticketData);
-		} catch (error) {
-			console.error(error);
-			throw error;
-		}
+		return await this.ticketDAO.create(ticketData);
 	}
 }
 

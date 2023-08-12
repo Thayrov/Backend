@@ -1,3 +1,5 @@
+import CustomError from '../services/errors/custom-error.js';
+import EErrors from '../services/errors/enums.js';
 import {UserResponseDTO} from '../dto/user.dto.js';
 import passport from 'passport';
 
@@ -5,8 +7,14 @@ class AuthController {
 	registerUser(req, res, next) {
 		passport.authenticate('register', (err, user, info) => {
 			if (err) {
-				console.log('Error during registration:', err);
-				return next(err);
+				return next(
+					CustomError.createError({
+						name: 'RegistrationError',
+						cause: err,
+						message: 'Error during registration',
+						code: EErrors.USER_VALIDATION_ERROR,
+					}),
+				);
 			}
 			if (!user) {
 				console.log('No user returned from registration');
@@ -14,8 +22,14 @@ class AuthController {
 			}
 			req.logIn(user, function (err) {
 				if (err) {
-					console.log('Error logging in user:', err);
-					return next(err);
+					return next(
+						CustomError.createError({
+							name: 'LoginError',
+							cause: err,
+							message: 'Error logging in user after registration',
+							code: EErrors.AUTHENTICATION_ERROR,
+						}),
+					);
 				}
 				console.log('User registered and logged in successfully:', user);
 				return res.redirect('/profile');
@@ -26,8 +40,14 @@ class AuthController {
 	loginUser(req, res, next) {
 		passport.authenticate('login', (err, user, info) => {
 			if (err) {
-				console.log('Error during authentication:', err);
-				return next(err);
+				return next(
+					CustomError.createError({
+						name: 'AuthenticationError',
+						cause: err,
+						message: 'Error during authentication',
+						code: EErrors.AUTHENTICATION_ERROR,
+					}),
+				);
 			}
 			if (!user) {
 				console.log('No user returned from authentication');
@@ -35,8 +55,14 @@ class AuthController {
 			}
 			req.logIn(user, function (err) {
 				if (err) {
-					console.log('Error logging in user:', err);
-					return next(err);
+					return next(
+						CustomError.createError({
+							name: 'LoginError',
+							cause: err,
+							message: 'Error logging in user',
+							code: EErrors.AUTHENTICATION_ERROR,
+						}),
+					);
 				}
 				console.log('User logged in successfully:', user);
 				return res.redirect('/profile');
@@ -44,38 +70,93 @@ class AuthController {
 		})(req, res, next);
 	}
 
-	renderLoginForm(req, res) {
-		if (req.session.user) {
-			return res.redirect('/profile');
+	renderLoginForm(req, res, next) {
+		try {
+			if (req.session.user) {
+				return res.redirect('/profile');
+			}
+			return res.render('login');
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'RenderLoginError',
+					cause: err,
+					message: 'Error rendering login form',
+					code: EErrors.UNAUTHORIZED_ACTION,
+				}),
+			);
 		}
-		return res.render('login');
 	}
 
-	renderRegisterForm(req, res) {
-		if (req.session.user) {
-			return res.redirect('/profile');
+	renderRegisterForm(req, res, next) {
+		try {
+			if (req.session.user) {
+				return res.redirect('/profile');
+			}
+			return res.render('register');
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'RenderRegisterError',
+					cause: err,
+					message: 'Error rendering register form',
+					code: EErrors.UNAUTHORIZED_ACTION,
+				}),
+			);
 		}
-		return res.render('register');
 	}
 
-	renderProfile(req, res) {
-		let user = req.user;
-		if (user.toObject) {
-			user = user.toObject();
+	renderProfile(req, res, next) {
+		try {
+			let user = req.user;
+			if (user.toObject) {
+				user = user.toObject();
+			}
+			delete user.password;
+			console.log("profile's user: ", user);
+			return res.render('profile', {user});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'RenderProfileError',
+					cause: err,
+					message: 'Error rendering profile',
+					code: EErrors.USER_NOT_FOUND,
+				}),
+			);
 		}
-		delete user.password;
-		console.log("profile's user: ", user);
-		return res.render('profile', {user});
 	}
 
-	renderAdmin(req, res) {
-		const {user} = req.session;
-		return res.render('admin', {user});
+	renderAdmin(req, res, next) {
+		try {
+			const {user} = req.session;
+			return res.render('admin', {user});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'RenderAdminError',
+					cause: err,
+					message: 'Error rendering admin page',
+					code: EErrors.AUTHORIZATION_ERROR,
+				}),
+			);
+		}
 	}
 
-	handleLogout(req, res) {
-		req.session.destroy();
-		res.redirect('/login');
+	handleLogout(req, res, next) {
+		try {
+			req.session.destroy();
+			res.redirect('/login');
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'LogoutError',
+					cause: err,
+					message: 'Error during logout',
+					code: EErrors.AUTHENTICATION_ERROR,
+				}),
+			);
+		}
 	}
 
 	getCurrentUser(req, res) {
@@ -87,16 +168,32 @@ class AuthController {
 			user = new UserResponseDTO(user.toObject());
 			return res.status(200).json({user});
 		} catch (err) {
-			return res
-				.status(500)
-				.json({message: 'Error getting current user', error: err.message});
+			return next(
+				CustomError.createError({
+					name: 'GetCurrentUserError',
+					cause: err,
+					message: 'Error getting current user',
+					code: EErrors.DATABASE_ERROR,
+				}),
+			);
 		}
 	}
 
 	githubLogin(req, res, next) {
-		passport.authenticate('github', {
-			scope: ['user:email'],
-		})(req, res, next);
+		try {
+			passport.authenticate('github', {
+				scope: ['user:email'],
+			})(req, res, next);
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'GitHubLoginError',
+					cause: err,
+					message: 'Error during GitHub login',
+					code: EErrors.AUTHENTICATION_ERROR,
+				}),
+			);
+		}
 	}
 
 	githubCallback(req, res, next) {
@@ -105,8 +202,14 @@ class AuthController {
 			{failureRedirect: '/login'},
 			(err, user, info) => {
 				if (err) {
-					console.log('Error during GitHub authentication:', err);
-					return next(err);
+					return next(
+						CustomError.createError({
+							name: 'GitHubAuthError',
+							cause: err,
+							message: 'Error during GitHub authentication',
+							code: EErrors.AUTHENTICATION_ERROR,
+						}),
+					);
 				}
 				if (!user) {
 					console.log('No user returned from GitHub authentication');
@@ -114,8 +217,14 @@ class AuthController {
 				}
 				req.logIn(user, function (err) {
 					if (err) {
-						console.log('Error logging in user:', err);
-						return next(err);
+						return next(
+							CustomError.createError({
+								name: 'LoginError',
+								cause: err,
+								message: 'Error logging in user via GitHub',
+								code: EErrors.AUTHENTICATION_ERROR,
+							}),
+						);
 					}
 					console.log('User logged in successfully via GitHub:', user);
 					return res.redirect('/view/products');
