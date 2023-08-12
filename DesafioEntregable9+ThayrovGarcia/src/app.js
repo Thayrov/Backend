@@ -9,6 +9,7 @@ import express from 'express';
 import {fileURLToPath} from 'url';
 import handlebars from 'express-handlebars';
 import iniPassport from './config/passport.config.js';
+import mockRouter from './routes/mock.routes.js';
 import passport from 'passport';
 import path from 'path';
 import routerCarts from './routes/carts.routes.js';
@@ -42,7 +43,7 @@ app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCarts);
 app.use('/api/sessions', authRouter);
 app.use('/', viewsRouter);
-
+app.use('/mockingproducts', mockRouter);
 app.get('*', (req, res) => {
 	return res.status(404).json({
 		status: 'error',

@@ -1,8 +1,6 @@
 import EErrors from '../services/errors/enums.js';
 
 export default (error, req, res, next) => {
-	console.log(error.cause);
-
 	switch (error.code) {
 		// 400 Bad Request
 		case EErrors.INVALID_TYPES_ERROR:

@@ -65,7 +65,6 @@ export default async function iniPassport() {
 					const user = await authService.githubAuth(accessToken, profile);
 					return done(null, user);
 				} catch (e) {
-					console.log('Error in GitHub auth');
 					console.log(e);
 					return done(e);
 				}
@@ -74,12 +73,10 @@ export default async function iniPassport() {
 	);
 
 	passport.serializeUser((user, done) => {
-		console.log('Serializing user:', user);
 		done(null, user._id);
 	});
 
 	passport.deserializeUser(async (id, done) => {
-		console.log('Deserializing user with id:', id);
 		if (id === 'adminId') {
 			const adminUser = {
 				_id: 'adminId',
