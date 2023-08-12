@@ -1,4 +1,5 @@
 import authRouter from './routes/auth.routes.js';
+import compression from 'express-compression';
 import {configureSession} from './config/session.config.js';
 import cookieParser from 'cookie-parser';
 import environment from './config/enviroment.config.js';
@@ -21,6 +22,7 @@ export const __dirname = path.dirname(__filename);
 
 const app = express();
 
+app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -36,7 +38,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
 
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCarts);
 app.use('/api/sessions', authRouter);
