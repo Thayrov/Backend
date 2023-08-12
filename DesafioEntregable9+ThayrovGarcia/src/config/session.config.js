@@ -5,7 +5,7 @@ import session from 'express-session';
 
 const {MONGO_URL, SESSION_SECRET} = environment;
 export const configureSession = () => {
-	console.log('MongoSingleton has instance:', MongoSingleton.hasInstance());
+	//console.log('MongoSingleton has instance:', MongoSingleton.hasInstance());
 	if (MongoSingleton.hasInstance()) {
 		return session({
 			secret: SESSION_SECRET,
