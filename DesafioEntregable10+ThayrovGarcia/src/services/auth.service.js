@@ -2,6 +2,7 @@ import {createHash, isValidPassword} from '../config/bcrypt.config.js';
 
 import {DAOFactory} from '../dao/factory.js';
 import fetch from 'node-fetch';
+import {logger} from '../config/logger.config.js';
 
 class AuthService {
 	async init() {
@@ -38,6 +39,7 @@ class AuthService {
 		const emailDetail = emails.find(email => email.verified == true);
 
 		if (!emailDetail) {
+			logger.error('Cannot get a valid email for this user');
 			throw new Error('Cannot get a valid email for this user');
 		}
 		profile.email = emailDetail.email;
@@ -53,9 +55,9 @@ class AuthService {
 				password: createHash(accessToken.substring(0, 10)),
 			};
 			user = await this.userDAO.create(newUser);
-			console.log('User Registration successful');
+			logger.info('User Registration successful');
 		} else {
-			console.log('User already exists');
+			logger.info('User already exists');
 		}
 		return user;
 	}

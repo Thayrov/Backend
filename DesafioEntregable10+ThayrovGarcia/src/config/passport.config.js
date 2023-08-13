@@ -1,8 +1,11 @@
+import CustomError from '../services/errors/custom-error.js';
 import {DAOFactory} from '../dao/factory.js';
+import EErrors from '../services/errors/enums.js';
 import {Strategy as GitHubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
 import environment from './enviroment.config.js';
 import {initializeAuthService} from '../services/auth.service.js';
+import {logger} from './logger.config.js';
 import passport from 'passport';
 
 const {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} = environment;
@@ -14,11 +17,21 @@ export default async function iniPassport() {
 		new LocalStrategy(
 			{usernameField: 'email'},
 			async (username, password, done) => {
+				logger.debug(`Attempting to authenticate user: ${username}`);
 				try {
 					const user = await authService.loginUser(username, password);
+					logger.info(`User ${username} authenticated successfully`);
 					return done(null, user);
 				} catch (err) {
-					return done(err);
+					logger.error(`Authentication failed for user ${username}`);
+					return done(
+						CustomError.createError({
+							name: 'PassportLoginError',
+							cause: err,
+							message: 'Error during passport login',
+							code: EErrors.AUTHENTICATION_ERROR,
+						}),
+					);
 				}
 			},
 		),
@@ -44,8 +57,15 @@ export default async function iniPassport() {
 					};
 					const userCreated = await authService.registerUser(user);
 					return done(null, userCreated);
-				} catch (e) {
-					return done(e);
+				} catch (err) {
+					return done(
+						CustomError.createError({
+							name: 'PassportRegisterError',
+							cause: err,
+							message: 'Error during passport register',
+							code: EErrors.AUTHENTICATION_ERROR,
+						}),
+					);
 				}
 			},
 		),
@@ -64,9 +84,16 @@ export default async function iniPassport() {
 				try {
 					const user = await authService.githubAuth(accessToken, profile);
 					return done(null, user);
-				} catch (e) {
-					console.log(e);
-					return done(e);
+				} catch (err) {
+					logger.error('Error during GitHub authentication:', err);
+					return done(
+						CustomError.createError({
+							name: 'GitHubAuthError',
+							cause: err,
+							message: 'Error during GitHub authentication',
+							code: EErrors.AUTHENTICATION_ERROR,
+						}),
+					);
 				}
 			},
 		),

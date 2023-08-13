@@ -1,6 +1,7 @@
 import CustomError from '../services/errors/custom-error.js';
 import EErrors from '../services/errors/enums.js';
 import {UserResponseDTO} from '../dto/user.dto.js';
+import {logger} from '../config/logger.config.js';
 import passport from 'passport';
 
 class AuthController {
@@ -17,7 +18,7 @@ class AuthController {
 				);
 			}
 			if (!user) {
-				console.log('No user returned from registration');
+				logger.warn('No user returned from registration');
 				return res.redirect('/register');
 			}
 			req.logIn(user, function (err) {
@@ -50,7 +51,7 @@ class AuthController {
 				);
 			}
 			if (!user) {
-				console.log('No user returned from authentication');
+				logger.warn('No user returned from authentication');
 				return res.redirect('/login');
 			}
 			req.logIn(user, function (err) {
@@ -64,7 +65,7 @@ class AuthController {
 						}),
 					);
 				}
-				console.log('User logged in successfully:', user);
+				logger.info('User logged in successfully:', user);
 				return res.redirect('/profile');
 			});
 		})(req, res, next);
@@ -113,7 +114,7 @@ class AuthController {
 				user = user.toObject();
 			}
 			delete user.password;
-			console.log("profile's user: ", user);
+			logger.debug("profile's user: ", user);
 			return res.render('profile', {user});
 		} catch (err) {
 			return next(
@@ -163,6 +164,7 @@ class AuthController {
 		try {
 			let user = req.user;
 			if (!user) {
+				logger.warn('User not authenticated');
 				return res.status(401).json({message: 'User not authenticated'});
 			}
 			user = new UserResponseDTO(user.toObject());
@@ -212,7 +214,7 @@ class AuthController {
 					);
 				}
 				if (!user) {
-					console.log('No user returned from GitHub authentication');
+					logger.warn('No user returned from GitHub authentication');
 					return res.redirect('/login');
 				}
 				req.logIn(user, function (err) {

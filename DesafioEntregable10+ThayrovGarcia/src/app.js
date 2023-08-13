@@ -1,3 +1,4 @@
+import {addLogger} from './middlewares/logger.middleware.js';
 import authRouter from './routes/auth.routes.js';
 import compression from 'express-compression';
 import {configureSession} from './config/session.config.js';
@@ -9,6 +10,7 @@ import express from 'express';
 import {fileURLToPath} from 'url';
 import handlebars from 'express-handlebars';
 import iniPassport from './config/passport.config.js';
+import {logger} from './config/logger.config.js';
 import mockRouter from './routes/mock.routes.js';
 import passport from 'passport';
 import path from 'path';
@@ -24,6 +26,7 @@ export const __dirname = path.dirname(__filename);
 const app = express();
 
 app.use(compression());
+app.use(addLogger);
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -39,6 +42,16 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.get('/loggerTest', (req, res) => {
+	req.logger.debug('This is a debug log');
+	req.logger.http('This is an http log');
+	req.logger.info('This is an info log');
+	req.logger.warning('This is a warning log');
+	req.logger.error('This is an error log');
+	req.logger.fatal('This is a fatal log');
+	res.send('Logs generated! Check your console and errors.log file.');
+});
+
 app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCarts);
 app.use('/api/sessions', authRouter);
@@ -55,5 +68,5 @@ app.use('/error', errorRouter);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-	console.log(`Server listening at http://localhost:${PORT}`);
+	logger.info(`Server listening at http://localhost:${PORT}`);
 });

@@ -1,6 +1,7 @@
 import CustomError from '../services/errors/custom-error.js';
 import EErrors from '../services/errors/enums.js';
 import {initializeCartService} from '../services/carts.service.js';
+import {logger} from '../config/logger.config.js';
 
 class CartsController {
 	constructor() {
@@ -13,6 +14,7 @@ class CartsController {
 			const newCart = await this.cartService.createCart(cartData);
 			res.status(201).json(newCart);
 		} catch (err) {
+			logger.error('Error creating cart: ' + err.message);
 			return next(
 				CustomError.createError({
 					name: 'CreateCartError',
@@ -31,6 +33,7 @@ class CartsController {
 			if (cart) {
 				res.json(cart);
 			} else {
+				logger.warn('Cart not found with ID: ' + cartId);
 				return next(
 					CustomError.createError({
 						name: 'CartNotFoundError',
@@ -75,6 +78,7 @@ class CartsController {
 				);
 			}
 		} catch (err) {
+			logger.error('Error adding product to cart: ' + err.message);
 			return next(
 				CustomError.createError({
 					name: 'AddProductToCartError',
@@ -95,6 +99,7 @@ class CartsController {
 
 			res.status(200).json({message: 'Product deleted from cart successfully'});
 		} catch (err) {
+			logger.error('Error deleting product: ' + err.message);
 			return next(
 				CustomError.createError({
 					name: 'DeleteProductFromCartError',
@@ -186,6 +191,7 @@ class CartsController {
 				});
 			}
 		} catch (err) {
+			logger.error('Error finalizing purchase: ' + err.message);
 			return next(
 				CustomError.createError({
 					name: 'FinalizePurchaseError',

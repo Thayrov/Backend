@@ -1,6 +1,7 @@
 import {DAOFactory} from '../dao/factory.js';
 import {initializeProductService} from './products.service.js';
 import {initializeTicketService} from './tickets.service.js';
+import {logger} from '../config/logger.config.js';
 
 export class CartService {
 	async init() {
@@ -20,6 +21,7 @@ export class CartService {
 	async addProductToCart(cartId, productId) {
 		const productToAdd = await this.productService.getProductById(productId);
 		if (!productToAdd) {
+			logger.error('Product not found');
 			throw new Error('Product not found');
 		}
 		return await this.cartDAO.addProduct(cartId, {
@@ -40,6 +42,7 @@ export class CartService {
 		const cart = await this.getCartById(cartId);
 		const productIndex = cart.products.findIndex(p => p.product === productId);
 		if (productIndex === -1) {
+			logger.error('Product not found in cart');
 			throw new Error('Product not found in cart');
 		}
 		cart.products[productIndex].quantity = quantity;
@@ -69,7 +72,11 @@ export class CartService {
 				unprocessedProducts.push(item.product);
 			}
 		}
-
+		if (unprocessedProducts.length > 0) {
+			logger.warn(
+				'Some products could not be processed due to insufficient stock',
+			);
+		}
 		const ticketData = {
 			amount: totalAmount,
 			purchaser: userEmail,

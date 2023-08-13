@@ -1,4 +1,5 @@
 import {DAOFactory} from '../dao/factory.js';
+import {logger} from '../config/logger.config.js';
 
 export class ProductService {
 	async init() {
@@ -8,7 +9,7 @@ export class ProductService {
 	validateCreateProduct(productData) {
 		const {title, description, code, price, stock, thumbnail} = productData;
 		if (!title || !description || !code || !price || !stock || !thumbnail) {
-			console.log('validation error: Please complete all fields.');
+			logger.error('validation error: Please complete all fields.');
 			throw 'Validation Error';
 		}
 	}
@@ -24,14 +25,14 @@ export class ProductService {
 			!stock ||
 			!thumbnail
 		) {
-			console.log('validation error: please complete required data.');
+			logger.error('validation error: please complete required data.');
 			throw 'Validation Error';
 		}
 	}
 
 	validateId(id) {
 		if (!id) {
-			console.log('validation error: ID not available.');
+			logger.error('validation error: ID not available.');
 			throw 'Validation Error';
 		}
 	}

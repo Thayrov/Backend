@@ -1,5 +1,6 @@
 import CustomError from '../services/errors/custom-error.js';
 import EErrors from '../services/errors/enums.js';
+import {logger} from '../config/logger.config.js';
 
 class MessagesController {
 	constructor() {
@@ -9,8 +10,10 @@ class MessagesController {
 	async getAllMessages(req, res) {
 		try {
 			const messages = await this.messageService.getAllMessages();
+			logger.info('Successfully retrieved all messages');
 			res.send(messages);
 		} catch (err) {
+			logger.error('Error retrieving all messages: ' + err.message);
 			return next(
 				CustomError.createError({
 					name: 'GetAllMessagesError',
@@ -26,8 +29,12 @@ class MessagesController {
 		try {
 			const messageData = req.body;
 			const newMessage = await this.messageService.createMessage(messageData);
+			logger.info('Successfully created a new message');
+
 			res.send(newMessage);
 		} catch (err) {
+			logger.error('Error creating message: ' + err.message);
+
 			return next(
 				CustomError.createError({
 					name: 'CreateMessageError',

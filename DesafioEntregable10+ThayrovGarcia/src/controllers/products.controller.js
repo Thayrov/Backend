@@ -1,6 +1,7 @@
 import CustomError from '../services/errors/custom-error.js';
 import EErrors from '../services/errors/enums.js';
 import {initializeProductService} from '../services/products.service.js';
+import {logger} from '../config/logger.config.js';
 
 class ProductsController {
 	constructor() {
@@ -40,6 +41,8 @@ class ProductsController {
 					: null,
 			});
 		} catch (err) {
+			logger.error('Error retrieving all products: ' + err.message);
+
 			return next(
 				CustomError.createError({
 					name: 'GetAllProductsError',
@@ -85,6 +88,7 @@ class ProductsController {
 					: null,
 			});
 		} catch (err) {
+			logger.error('Error viewing all products: ' + err.message);
 			return next(
 				CustomError.createError({
 					name: 'ViewAllProductsError',
@@ -106,6 +110,7 @@ class ProductsController {
 				res.status(404).send({error: 'Product not found'});
 			}
 		} catch (err) {
+			logger.error('Error retrieving product by ID: ' + err.message);
 			return next(
 				CustomError.createError({
 					name: 'GetProductByIdError',
@@ -127,6 +132,7 @@ class ProductsController {
 				res.status(404).send({error: 'Product not found'});
 			}
 		} catch (err) {
+			logger.error('Error viewing product by ID: ' + err.message);
 			return next(
 				CustomError.createError({
 					name: 'ViewProductByIdError',
@@ -144,6 +150,7 @@ class ProductsController {
 			const newProduct = await this.productService.createProduct(productData);
 			res.send(newProduct);
 		} catch (err) {
+			logger.error('Error creating product: ' + err.message);
 			return next(
 				CustomError.createError({
 					name: 'CreateProductError',
@@ -169,6 +176,7 @@ class ProductsController {
 				res.status(404).send({error: 'Product not found'});
 			}
 		} catch (err) {
+			logger.error('Error updating product: ' + err.message);
 			return next(
 				CustomError.createError({
 					name: 'UpdateProductError',
@@ -190,6 +198,7 @@ class ProductsController {
 				res.status(404).send({error: 'Product not found'});
 			}
 		} catch (err) {
+			logger.error('Error deleting product: ' + err.message);
 			return next(
 				CustomError.createError({
 					name: 'DeleteProductError',
