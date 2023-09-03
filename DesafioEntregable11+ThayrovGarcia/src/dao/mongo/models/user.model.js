@@ -12,7 +12,12 @@ const UserSchema = new Schema({
 		required: false,
 		max: 100,
 	},
-	role: {type: String, default: 'user', required: true},
+	role: {
+		type: String,
+		default: 'user',
+		required: true,
+		enum: ['user', 'admin', 'premium'],
+	},
 	// Added fields for password reset
 	resetPasswordToken: {type: String, required: false},
 	resetPasswordExpires: {type: Date, required: false},

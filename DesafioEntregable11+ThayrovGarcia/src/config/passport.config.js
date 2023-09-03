@@ -63,7 +63,7 @@ export default async function iniPassport() {
 			{
 				clientID: GITHUB_CLIENT_ID,
 				clientSecret: GITHUB_CLIENT_SECRET,
-				callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
+				callbackURL: 'http://localhost:8080/api/users/githubcallback',
 			},
 			async (accessToken, _, profile, done) => {
 				try {

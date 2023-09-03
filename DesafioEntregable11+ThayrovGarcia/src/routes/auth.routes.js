@@ -15,6 +15,7 @@ export const initializeAuthRoutes = async () => {
 		resetPassword,
 		renderForgotPasswordForm,
 		renderResetPassword,
+		toggleUserRole,
 	} = AuthControllerInstance;
 
 	router.post('/register', registerUser);
@@ -26,6 +27,7 @@ export const initializeAuthRoutes = async () => {
 	router.post('/request-password-reset', requestPasswordReset);
 	router.get('/reset-password', renderResetPassword);
 	router.post('/reset-password', resetPassword);
+	router.put('/premium/:uid', toggleUserRole);
 
 	return router;
 };

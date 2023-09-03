@@ -12,6 +12,11 @@ const productSchema = new Schema(
 		// category: {type: String, required: true},
 		// status: {type: Boolean, required: true, default: true},
 		thumbnails: [String],
+		owner: {
+			type: Schema.Types.ObjectId,
+			ref: 'user',
+			default: null,
+		},
 	},
 	{collection: 'products'},
 );

@@ -119,6 +119,15 @@ class AuthService {
 			},
 		);
 	}
+	async toggleUserRole(userId) {
+		const user = await this.userDAO.findById(userId);
+		if (!user) {
+			throw new Error('User not found');
+		}
+		user.role = user.role === 'premium' ? 'user' : 'premium';
+		await this.userDAO.update({_id: userId}, {role: user.role});
+		return user;
+	}
 }
 
 let authService;

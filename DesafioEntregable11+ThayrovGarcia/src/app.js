@@ -62,7 +62,7 @@ const initializeApp = async () => {
 	// Route setup
 	app.use('/api/products', routerProducts);
 	app.use('/api/carts', routerCarts);
-	app.use('/api/sessions', authRouter);
+	app.use('/api/users', authRouter);
 	app.use('/', viewsRouter);
 	app.use('/mockingproducts', mockRouter);
 	app.get('*', (req, res) => {

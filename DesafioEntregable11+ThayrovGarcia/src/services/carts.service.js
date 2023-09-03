@@ -18,11 +18,14 @@ export class CartService {
 		return await this.cartDAO.findById(cartId);
 	}
 
-	async addProductToCart(cartId, productId) {
+	async addProductToCart(cartId, productId, user) {
 		const productToAdd = await this.productService.getProductById(productId);
 		if (!productToAdd) {
 			logger.error('Product not found');
 			throw new Error('Product not found');
+		}
+		if (user.role === 'premium' && productToAdd.owner === user._id) {
+			throw new Error('You cannot add your own product to the cart');
 		}
 		return await this.cartDAO.addProduct(cartId, {
 			product: productId,

@@ -311,7 +311,7 @@ class AuthController {
 					<h1>Hello,</h1>
 					<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>
 					<p>Please click on the following link, or paste it into your browser to complete the process:</p>
-					<a href="http://localhost:${PORT}/api/sessions/reset-password?token=${token}&email=${email}">Reset Password</a>
+					<a href="http://localhost:${PORT}/api/users/reset-password?token=${token}&email=${email}">Reset Password</a>
 					<p>This link will expire in one hour.</p>
 					<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
 				</body>
@@ -341,7 +341,7 @@ class AuthController {
 		} catch (error) {
 			if (error.message === 'Invalid or expired reset token') {
 				// Redirect to a view where the user can request a new reset email
-				return res.redirect('/api/sessions/forgot-password');
+				return res.redirect('/api/users/forgot-password');
 			}
 			next(error);
 		}
@@ -364,6 +364,22 @@ class AuthController {
 				status: 'error',
 				error: error.message,
 			});
+		}
+	};
+	toggleUserRole = async (req, res, next) => {
+		const {uid} = req.params;
+		try {
+			const updatedUser = await this.authService.toggleUserRole(uid);
+			return res.status(200).json({message: 'User role updated', updatedUser});
+		} catch (error) {
+			return next(
+				CustomError.createError({
+					name: 'ToggleRoleError',
+					cause: error,
+					message: 'Error toggling user role',
+					code: EErrors.INTERNAL_SERVER_ERROR,
+				}),
+			);
 		}
 	};
 }

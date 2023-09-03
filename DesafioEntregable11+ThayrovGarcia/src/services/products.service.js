@@ -53,19 +53,64 @@ export class ProductService {
 		return await this.productDAO.findByCode(code);
 	}
 
-	async createProduct(productData) {
+	async createProduct(productData, user) {
 		this.validateCreateProduct(productData);
+
+		// Set default owner to 'admin' if not provided
+		if (!productData.owner) {
+			productData.owner = 'admin';
+		} else {
+			// Validate if the user is premium before setting them as owner
+			if (user.role === 'premium') {
+				productData.owner = user._id;
+			} else {
+				throw new Error('Only premium users can set themselves as owner');
+			}
+		}
 
 		return await this.productDAO.create(productData);
 	}
 
-	async updateProduct(id, updatedFields) {
+	async updateProduct(id, updatedFields, user) {
+		const existingProduct = await this.productDAO.findById(id);
+		if (!existingProduct) {
+			throw new Error('Product not found');
+		}
+
+		if (
+			existingProduct.owner &&
+			existingProduct.owner !== user._id &&
+			user.role !== 'admin'
+		) {
+			throw new Error('You are not authorized to update this product');
+		}
+
 		this.validateUpdateProduct(id, updatedFields);
+
+		// Validate if the user is premium if they are trying to set/change the owner
+		if (updatedFields.owner) {
+			if (user.role !== 'premium') {
+				throw new Error('Only premium users can set/change the owner');
+			}
+		}
 
 		return await this.productDAO.update(id, updatedFields);
 	}
 
-	async deleteProduct(id) {
+	async deleteProduct(id, user) {
+		const existingProduct = await this.productDAO.findById(id);
+		if (!existingProduct) {
+			throw new Error('Product not found');
+		}
+
+		if (
+			existingProduct.owner &&
+			existingProduct.owner !== user._id &&
+			user.role !== 'admin'
+		) {
+			throw new Error('You are not authorized to delete this product');
+		}
+
 		return await this.productDAO.delete(id);
 	}
 }
