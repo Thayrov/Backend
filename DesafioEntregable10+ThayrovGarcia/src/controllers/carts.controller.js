@@ -8,7 +8,7 @@ class CartsController {
 		this.cartService = initializeCartService();
 	}
 
-	createCart = async (req, res) => {
+	createCart = async (req, res, next) => {
 		try {
 			const cartData = req.body;
 			const newCart = await this.cartService.createCart(cartData);
@@ -26,7 +26,7 @@ class CartsController {
 		}
 	};
 
-	getCartById = async (req, res) => {
+	getCartById = async (req, res, next) => {
 		try {
 			const cartId = req.params.cid;
 			const cart = await this.cartService.getCartById(cartId);
@@ -55,7 +55,7 @@ class CartsController {
 		}
 	};
 
-	addProductToCart = async (req, res) => {
+	addProductToCart = async (req, res, next) => {
 		try {
 			const cartId = req.params.cid;
 			const productId = req.params.pid;
@@ -90,7 +90,7 @@ class CartsController {
 		}
 	};
 
-	deleteProductFromCart = async (req, res) => {
+	deleteProductFromCart = async (req, res, next) => {
 		try {
 			const cartId = req.params.cid;
 			const productId = req.params.pid;
@@ -111,7 +111,7 @@ class CartsController {
 		}
 	};
 
-	updateCart = async (req, res) => {
+	updateCart = async (req, res, next) => {
 		try {
 			const cartId = req.params.cid;
 			const products = req.body.products;
@@ -131,7 +131,7 @@ class CartsController {
 		}
 	};
 
-	updateProductQuantity = async (req, res) => {
+	updateProductQuantity = async (req, res, next) => {
 		try {
 			const cartId = req.params.cid;
 			const productId = req.params.pid;
@@ -152,7 +152,7 @@ class CartsController {
 		}
 	};
 
-	clearCart = async (req, res) => {
+	clearCart = async (req, res, next) => {
 		try {
 			const cartId = req.params.cid;
 
@@ -171,7 +171,7 @@ class CartsController {
 		}
 	};
 
-	finalizePurchase = async (req, res) => {
+	finalizePurchase = async (req, res, next) => {
 		try {
 			const cartId = req.params.cid;
 			const userEmail = req.user.email;

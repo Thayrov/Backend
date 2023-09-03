@@ -18,6 +18,7 @@ const UserSchema = new Schema({
 UserSchema.pre(['find', 'findOne', 'findById'], function () {
 	this.populate('cart');
 });
+//TODO -  UserSchema.statics.
 
 const UserModel = model('User', UserSchema);
 

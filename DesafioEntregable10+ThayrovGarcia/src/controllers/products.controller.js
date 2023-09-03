@@ -4,10 +4,10 @@ import {initializeProductService} from '../services/products.service.js';
 import {logger} from '../config/logger.config.js';
 
 class ProductsController {
-	constructor() {
-		this.productService = initializeProductService();
-	}
-	async getAllProducts(req, res) {
+	init = async () => {
+		this.productService = await initializeProductService();
+	};
+	getAllProducts = async (req, res, next) => {
 		try {
 			const {limit = 5, ...query} = req.query;
 
@@ -18,7 +18,7 @@ class ProductsController {
 
 			res.status(200).send({
 				status: 'Success',
-				payload: products.docs.map(product => ({
+				payload: products.map(product => ({
 					id: product._id.toString(),
 					name: product.name,
 					description: product.description,
@@ -52,9 +52,9 @@ class ProductsController {
 				}),
 			);
 		}
-	}
+	};
 
-	async getViewAllProducts(req, res) {
+	getViewAllProducts = async (req, res, next) => {
 		try {
 			const {limit = 5, ...query} = req.query;
 
@@ -65,7 +65,7 @@ class ProductsController {
 
 			res.render('products', {
 				status: 'Success',
-				payload: products.docs.map(product => ({
+				payload: products.map(product => ({
 					id: product._id.toString(),
 					title: product.title,
 					description: product.description,
@@ -98,9 +98,9 @@ class ProductsController {
 				}),
 			);
 		}
-	}
+	};
 
-	async getProductById(req, res) {
+	getProductById = async (req, res, next) => {
 		try {
 			const id = req.params.pid;
 			const product = await this.productService.getProductById(id);
@@ -120,9 +120,9 @@ class ProductsController {
 				}),
 			);
 		}
-	}
+	};
 
-	async getViewProductById(req, res) {
+	getViewProductById = async (req, res, next) => {
 		try {
 			const id = req.params.pid;
 			const product = await this.productService.getProductById(id);
@@ -142,9 +142,9 @@ class ProductsController {
 				}),
 			);
 		}
-	}
+	};
 
-	async createProduct(req, res) {
+	createProduct = async (req, res, next) => {
 		try {
 			const productData = req.body;
 			const newProduct = await this.productService.createProduct(productData);
@@ -160,9 +160,9 @@ class ProductsController {
 				}),
 			);
 		}
-	}
+	};
 
-	async updateProduct(req, res) {
+	updateProduct = async (req, res, next) => {
 		try {
 			const id = req.params.pid;
 			const updatedFields = req.body;
@@ -186,9 +186,9 @@ class ProductsController {
 				}),
 			);
 		}
-	}
+	};
 
-	async deleteProduct(req, res) {
+	deleteProduct = async (req, res, next) => {
 		try {
 			const id = req.params.pid;
 			const deletedProduct = await this.productService.deleteProduct(id);
@@ -208,7 +208,15 @@ class ProductsController {
 				}),
 			);
 		}
-	}
+	};
 }
 
-export default new ProductsController();
+let productsController;
+
+export const initializeProductsController = async () => {
+	if (!productsController) {
+		productsController = new ProductsController();
+		await productsController.init();
+	}
+	return productsController;
+};

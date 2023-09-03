@@ -61,6 +61,9 @@ class AuthService {
 		}
 		return user;
 	}
+	async findUserById(id) {
+		return await this.userDAO.findById(id);
+	}
 }
 
 let authService;

@@ -4,8 +4,10 @@ import {logger} from '../config/logger.config.js';
 export class ProductService {
 	async init() {
 		this.productDAO = await DAOFactory('products');
+		if (!this.productDAO) {
+			throw new Error('Failed to initialize productDAO');
+		}
 	}
-
 	validateCreateProduct(productData) {
 		const {title, description, code, price, stock, thumbnail} = productData;
 		if (!title || !description || !code || !price || !stock || !thumbnail) {

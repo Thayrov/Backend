@@ -1,22 +1,24 @@
 import {isAdmin, isAuthenticated} from '../middlewares/auth.middleware.js';
 
-import ProductsController from '../controllers/products.controller.js';
 import express from 'express';
+import {initializeProductsController} from '../controllers/products.controller.js';
 
-const {
-	getAllProducts,
-	getProductById,
-	createProduct,
-	updateProduct,
-	deleteProduct,
-} = ProductsController;
+export const initializeProductsRoutes = async () => {
+	const router = express.Router();
+	const ProductsControllerInstance = await initializeProductsController();
 
-const routerProducts = express.Router();
+	const {
+		getAllProducts,
+		getProductById,
+		createProduct,
+		updateProduct,
+		deleteProduct,
+	} = ProductsControllerInstance;
 
-routerProducts.get('/', getAllProducts);
-routerProducts.get('/:pid', getProductById);
-routerProducts.post('/', isAuthenticated, isAdmin, createProduct);
-routerProducts.put('/:pid', isAuthenticated, isAdmin, updateProduct);
-routerProducts.delete('/:pid', isAuthenticated, isAdmin, deleteProduct);
-
-export default routerProducts;
+	router.get('/', getAllProducts);
+	router.get('/:pid', getProductById);
+	router.post('/', isAuthenticated, isAdmin, createProduct);
+	router.put('/:pid', isAuthenticated, isAdmin, updateProduct);
+	router.delete('/:pid', isAuthenticated, isAdmin, deleteProduct);
+	return router;
+};

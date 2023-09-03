@@ -160,7 +160,7 @@ class AuthController {
 		}
 	}
 
-	getCurrentUser(req, res) {
+	getCurrentUser(req, res, next) {
 		try {
 			let user = req.user;
 			if (!user) {

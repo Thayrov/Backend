@@ -10,7 +10,6 @@ import passport from 'passport';
 
 const {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} = environment;
 export default async function iniPassport() {
-	const userDAO = await DAOFactory('user');
 	const authService = await initializeAuthService();
 	passport.use(
 		'login',
@@ -111,8 +110,21 @@ export default async function iniPassport() {
 				role: 'admin',
 			};
 			return done(null, adminUser);
+		} else {
+			try {
+				let user = await authService.findUserById(id);
+				done(null, user);
+			} catch (err) {
+				logger.error(`Deserialization failed for user ID ${id}`);
+				return done(
+					CustomError.createError({
+						name: 'PassportDeserializationError',
+						cause: err,
+						message: 'Error during passport user deserialization',
+						code: EErrors.USER_NOT_FOUND,
+					}),
+				);
+			}
 		}
-		let user = await userDAO.findById(id);
-		done(null, user);
 	});
 }

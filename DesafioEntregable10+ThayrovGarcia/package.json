@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node ./src/app.js production",
-    "dev": "nodemon ./src/app.js development"
+    "dev": "nodemon -e yaml,js ./src/app.js development"
   },
   "keywords": [],
   "author": "Thayrov García",
@@ -34,6 +34,8 @@
     "passport-local": "^1.0.0",
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.6.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "winston": "^3.10.0"
   },
   "devDependencies": {
