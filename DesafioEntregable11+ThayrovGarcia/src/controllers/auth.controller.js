@@ -358,9 +358,12 @@ class AuthController {
 
 			res.status(200).json({message: 'Password updated successfully.'});
 		} catch (error) {
-			console.error('Error in resetPassword: ', error);
+			logger.error('Error in resetPassword: ', error);
 
-			next(error);
+			res.status(500).json({
+				status: 'error',
+				error: error.message,
+			});
 		}
 	};
 }

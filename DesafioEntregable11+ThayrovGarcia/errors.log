@@ -256,3 +256,4 @@
 2023-09-02 23:09:46 error: Authentication failed for user thayrovg@gmail.com
 2023-09-02 23:15:54 error: Authentication failed for user thayrovg@gmail.com
 2023-09-02 23:22:53 error: Authentication failed for user thayrovg@gmail.com
+2023-09-02 23:44:46 error: Error in resetPassword:  New password cannot be the same as the current password

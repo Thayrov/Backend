@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
+import {logger} from './logger.config.js';
 
 const environment = {MODE: process.argv[2]};
 const {MODE} = environment;
 
 if (MODE != 'development' && MODE != 'production') {
-	console.error('You are not selecting a valid environment');
+	logger.error('You are not selecting a valid environment');
 	process.exit();
 }
 dotenv.config({
