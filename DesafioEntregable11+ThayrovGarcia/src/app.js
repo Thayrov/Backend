@@ -1,4 +1,3 @@
-import authRouter from './routes/auth.routes.js';
 import compression from 'express-compression';
 import {configureSession} from './config/session.config.js';
 import cookieParser from 'cookie-parser';
@@ -9,6 +8,7 @@ import express from 'express';
 import {fileURLToPath} from 'url';
 import handlebars from 'express-handlebars';
 import iniPassport from './config/passport.config.js';
+import {initializeAuthRoutes} from './routes/auth.routes.js';
 import {initializeProductsRoutes} from './routes/products.routes.js';
 import {initializeViewsRoutes} from './routes/views.routes.js';
 import {logger} from './config/logger.config.js';
@@ -57,6 +57,7 @@ const initializeApp = async () => {
 	// Initialize the routes
 	const routerProducts = await initializeProductsRoutes();
 	const viewsRouter = await initializeViewsRoutes();
+	const authRouter = await initializeAuthRoutes();
 
 	// Route setup
 	app.use('/api/products', routerProducts);

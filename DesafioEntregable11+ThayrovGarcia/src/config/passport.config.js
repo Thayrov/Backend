@@ -23,14 +23,7 @@ export default async function iniPassport() {
 					return done(null, user);
 				} catch (err) {
 					logger.error(`Authentication failed for user ${username}`);
-					return done(
-						CustomError.createError({
-							name: 'PassportLoginError',
-							cause: err,
-							message: 'Error during passport login',
-							code: EErrors.AUTHENTICATION_ERROR,
-						}),
-					);
+					return done(null, false, {message: 'Invalid credentials'});
 				}
 			},
 		),
@@ -57,14 +50,7 @@ export default async function iniPassport() {
 					const userCreated = await authService.registerUser(user);
 					return done(null, userCreated);
 				} catch (err) {
-					return done(
-						CustomError.createError({
-							name: 'PassportRegisterError',
-							cause: err,
-							message: 'Error during passport register',
-							code: EErrors.AUTHENTICATION_ERROR,
-						}),
-					);
+					return done(null, false, {message: 'Error during registration'});
 				}
 			},
 		),
@@ -85,14 +71,9 @@ export default async function iniPassport() {
 					return done(null, user);
 				} catch (err) {
 					logger.error('Error during GitHub authentication:', err);
-					return done(
-						CustomError.createError({
-							name: 'GitHubAuthError',
-							cause: err,
-							message: 'Error during GitHub authentication',
-							code: EErrors.AUTHENTICATION_ERROR,
-						}),
-					);
+					return done(null, false, {
+						message: 'Error during GitHub authentication',
+					});
 				}
 			},
 		),
@@ -116,14 +97,9 @@ export default async function iniPassport() {
 				done(null, user);
 			} catch (err) {
 				logger.error(`Deserialization failed for user ID ${id}`);
-				return done(
-					CustomError.createError({
-						name: 'PassportDeserializationError',
-						cause: err,
-						message: 'Error during passport user deserialization',
-						code: EErrors.USER_NOT_FOUND,
-					}),
-				);
+				return done(null, false, {
+					message: 'Error during user deserialization',
+				});
 			}
 		}
 	});

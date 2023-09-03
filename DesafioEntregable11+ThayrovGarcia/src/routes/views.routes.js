@@ -1,12 +1,13 @@
 import {isAdmin, isAuthenticated} from '../middlewares/auth.middleware.js';
 
-import AuthController from '../controllers/auth.controller.js';
 import express from 'express';
+import {initializeAuthController} from '../controllers/auth.controller.js';
 import {initializeProductsController} from '../controllers/products.controller.js';
 
 export const initializeViewsRoutes = async () => {
 	const router = express.Router();
 	const ProductsControllerInstance = await initializeProductsController();
+	const AuthControllerInstance = await initializeAuthController();
 	const {getViewAllProducts, getViewProductById} = ProductsControllerInstance;
 
 	const {
@@ -15,7 +16,7 @@ export const initializeViewsRoutes = async () => {
 		renderLoginForm,
 		renderProfile,
 		renderRegisterForm,
-	} = AuthController;
+	} = AuthControllerInstance;
 
 	router.get('/view/products/', isAuthenticated, getViewAllProducts);
 	router.get('/view/products/:pid', isAuthenticated, getViewProductById);

@@ -1,15 +1,31 @@
-import AuthController from '../controllers/auth.controller.js';
 import express from 'express';
+import {initializeAuthController} from '../controllers/auth.controller.js';
 
-const authRouter = express.Router();
+export const initializeAuthRoutes = async () => {
+	const router = express.Router();
+	const AuthControllerInstance = await initializeAuthController();
 
-const {registerUser, loginUser, githubLogin, githubCallback, getCurrentUser} =
-	AuthController;
+	const {
+		registerUser,
+		loginUser,
+		githubLogin,
+		githubCallback,
+		getCurrentUser,
+		requestPasswordReset,
+		resetPassword,
+		renderForgotPasswordForm,
+		renderResetPassword,
+	} = AuthControllerInstance;
 
-authRouter.post('/register', registerUser);
-authRouter.post('/login', loginUser);
-authRouter.get('/github', githubLogin);
-authRouter.get('/githubcallback', githubCallback);
-authRouter.get('/current', getCurrentUser);
+	router.post('/register', registerUser);
+	router.post('/login', loginUser);
+	router.get('/github', githubLogin);
+	router.get('/githubcallback', githubCallback);
+	router.get('/current', getCurrentUser);
+	router.get('/forgot-password', renderForgotPasswordForm);
+	router.post('/request-password-reset', requestPasswordReset);
+	router.get('/reset-password', renderResetPassword);
+	router.post('/reset-password', resetPassword);
 
-export default authRouter;
+	return router;
+};

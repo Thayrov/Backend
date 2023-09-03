@@ -17,8 +17,8 @@ class UserMongoDAO {
 		return await UserModel.findOne(query);
 	}
 
-	async update(id, user) {
-		return await UserModel.findByIdAndUpdate(id, user, {new: true});
+	async update(query, user) {
+		return await UserModel.findOneAndUpdate(query, user, {new: true});
 	}
 
 	async delete(id) {

@@ -13,6 +13,9 @@ const UserSchema = new Schema({
 		max: 100,
 	},
 	role: {type: String, default: 'user', required: true},
+	// Added fields for password reset
+	resetPasswordToken: {type: String, required: false},
+	resetPasswordExpires: {type: Date, required: false},
 });
 
 UserSchema.pre(['find', 'findOne', 'findById'], function () {

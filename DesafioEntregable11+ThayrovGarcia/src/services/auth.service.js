@@ -1,6 +1,7 @@
 import {createHash, isValidPassword} from '../config/bcrypt.config.js';
 
 import {DAOFactory} from '../dao/factory.js';
+import crypto from 'crypto';
 import fetch from 'node-fetch';
 import {logger} from '../config/logger.config.js';
 
@@ -63,6 +64,60 @@ class AuthService {
 	}
 	async findUserById(id) {
 		return await this.userDAO.findById(id);
+	}
+
+	async generateResetToken(email) {
+		const user = await this.userDAO.findOne({email});
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		const token = crypto.randomBytes(20).toString('hex');
+		const expires = new Date(Date.now() + 3600000); // 1 hour from now
+
+		user.resetPasswordToken = token;
+		user.resetPasswordExpires = expires;
+
+		await this.userDAO.update({_id: user._id}, user);
+
+		return token;
+	}
+
+	async validateResetToken(email, token) {
+		const user = await this.userDAO.findOne({
+			email,
+			resetPasswordToken: token,
+			resetPasswordExpires: {$gt: Date.now()},
+		});
+
+		if (!user) {
+			throw new Error('Invalid or expired reset token');
+		}
+
+		return true;
+	}
+
+	async updatePassword(email, newPassword) {
+		const user = await this.userDAO.findOne({email});
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		if (isValidPassword(newPassword, user.password)) {
+			throw new Error(
+				'New password cannot be the same as the current password',
+			);
+		}
+
+		const hashedPassword = createHash(newPassword);
+		await this.userDAO.update(
+			{email},
+			{
+				password: hashedPassword,
+				resetPasswordToken: undefined,
+				resetPasswordExpires: undefined,
+			},
+		);
 	}
 }
 

@@ -252,3 +252,7 @@
 2023-09-02 19:07:01 error: Error viewing all products: Cannot read properties of undefined (reading 'map')
 2023-09-02 19:32:00 error: Error viewing all products: Data not found
 2023-09-02 19:42:16 error: Error retrieving all products: Cannot read properties of undefined (reading 'map')
+2023-09-02 23:07:25 error: Authentication failed for user manuelg@gmail.com
+2023-09-02 23:09:46 error: Authentication failed for user thayrovg@gmail.com
+2023-09-02 23:15:54 error: Authentication failed for user thayrovg@gmail.com
+2023-09-02 23:22:53 error: Authentication failed for user thayrovg@gmail.com
