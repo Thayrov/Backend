@@ -15,32 +15,17 @@ import {logger} from './config/logger.config.js';
 import mockRouter from './routes/mock.routes.js';
 import passport from 'passport';
 import path from 'path';
+import {rootDir} from './config/dirname.config.js';
 import routerCarts from './routes/carts.routes.js';
-import swaggerJSDoc from 'swagger-jsdoc';
+import {specs} from './config/swagger.config.js';
 import swaggerUiExpress from 'swagger-ui-express';
 
 const {PORT} = environment;
-
-export const __filename = fileURLToPath(import.meta.url);
-export const __dirname = path.dirname(__filename);
-
-const swaggerOptions = {
-	definition: {
-		openapi: '3.0.1',
-		info: {
-			title: 'E-commerce DOCS',
-			description: 'Este proyecto es para adoptar.',
-		},
-	},
-	apis: [`${__dirname}/docs/**/*.yaml`],
-};
-const specs = swaggerJSDoc(swaggerOptions);
 
 const initializeApp = async () => {
 	const app = express();
 
 	// Middleware setup
-	app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 	app.use(compression());
 	app.use(express.json());
@@ -53,11 +38,11 @@ const initializeApp = async () => {
 
 	// Handlebars setup
 	app.engine('handlebars', handlebars.engine());
-	app.set('views', path.join(__dirname, 'views'));
+	app.set('views', path.join(rootDir, 'views'));
 	app.set('view engine', 'handlebars');
 
 	// Static files
-	app.use(express.static(path.join(__dirname, 'public')));
+	app.use(express.static(path.join(rootDir, 'public')));
 
 	// Logger test route
 	app.get('/loggerTest', (req, res) => {
@@ -69,6 +54,9 @@ const initializeApp = async () => {
 		logger.fatal('This is a fatal log');
 		res.send('Logs generated! Check your console and errors.log file.');
 	});
+
+	// Swagger docs route
+	app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 	// Initialize the routes
 	const routerProducts = await initializeProductsRoutes();

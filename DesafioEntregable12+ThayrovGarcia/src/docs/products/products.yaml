@@ -1,0 +1,140 @@
+paths:
+  /api/products:
+    get:
+      summary: Get all products
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Products retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+    post:
+      summary: Create a new product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "201":
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+  /api/products/{pid}:
+    get:
+      summary: Retrieve a product by its ID
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID of the product to retrieve
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+    put:
+      summary: Update a product by its ID
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID of the product to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200":
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+    delete:
+      summary: Delete a product by its ID
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID of the product to delete
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Auto-generated ID
+        title:
+          type: string
+          description: Product title
+        description:
+          type: string
+          description: Product description
+        code:
+          type: string
+          description: Product code
+        price:
+          type: number
+          description: Product price
+        stock:
+          type: number
+          description: Product stock
+        thumbnails:
+          type: array
+          items:
+            type: string
+        owner:
+          type: string
+          description: Product owner
+      example:
+        _id: "12345"
+        title: "Laptop"
+        description: "A high-performance laptop"
+        code: "LT123"
+        price: 1200
+        stock: 10
+        thumbnails: ["image1.jpg", "image2.jpg"]
+        owner: "admin"

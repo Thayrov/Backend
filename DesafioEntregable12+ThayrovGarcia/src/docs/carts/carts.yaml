@@ -1,0 +1,62 @@
+paths:
+  /api/carts:
+    post:
+      summary: Create a new cart
+      tags:
+        - Carts
+      responses:
+        "201":
+          description: Cart created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+
+  /api/carts/{cid}:
+    get:
+      summary: Retrieve a cart by its ID
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID of the cart to retrieve
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Auto-generated ID
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductInCart"
+      example:
+        _id: "12345"
+        products: []
+
+    ProductInCart:
+      type: object
+      properties:
+        product:
+          type: string
+          description: Product ID
+        quantity:
+          type: number
+          description: Quantity of the product in the cart
+      example:
+        product: "67890"
+        quantity: 2
