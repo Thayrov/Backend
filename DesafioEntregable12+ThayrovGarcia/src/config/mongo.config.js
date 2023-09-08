@@ -1,6 +1,6 @@
 import CustomError from '../services/errors/custom-error.js';
 import EErrors from '../services/errors/enums.js';
-import environment from './enviroment.config.js';
+import environment from './environment.config.js';
 import {logger} from './logger.config.js';
 import mongoose from 'mongoose';
 

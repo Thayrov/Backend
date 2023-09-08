@@ -1,6 +1,6 @@
 import MongoSingleton from './mongo.config.js';
 import MongoStore from 'connect-mongo';
-import environment from './enviroment.config.js';
+import environment from './environment.config.js';
 import session from 'express-session';
 
 const {MONGO_URL, SESSION_SECRET} = environment;

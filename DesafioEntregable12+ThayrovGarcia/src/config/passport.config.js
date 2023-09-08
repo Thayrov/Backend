@@ -1,6 +1,6 @@
 import {Strategy as GitHubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
-import environment from './enviroment.config.js';
+import environment from './environment.config.js';
 import {initializeAuthService} from '../services/auth.service.js';
 import {logger} from './logger.config.js';
 import passport from 'passport';

@@ -1,5 +1,5 @@
 import MongoSingleton from '../config/mongo.config.js';
-import environment from '../config/enviroment.config.js';
+import environment from '../config/environment.config.js';
 
 export let isMongoConnected = false;
 
