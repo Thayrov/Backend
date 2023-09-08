@@ -62,40 +62,51 @@ http://localhost:PORT/apidocs
   - `config/`: Configuration files
   - `controllers/`: Route controllers
   - `dao/`: Data access objects
+  - `docs/`: API documentation (Swagger)
   - `dto/`: Data transfer objects
   - `middlewares/`: Custom middleware
   - `routes/`: API routes
   - `services/`: Business logic
-- `docs/`: API documentation (Swagger)
+  - `views/`: Views made with handlebars
 - `.env`: Environment variables (do not commit)
-- `README.md`: This file
+- `.gitignore`: Confirm .env file location in here
 - `package.json`: Project metadata and dependencies
+- `app.js`: App starting file
+- `README.md`: This file
 
 ## Environment Variables
 
-# The port number the application will listen on
+### The port number the application will listen on
+```bash
 PORT=
-
-# GitHub OAuth Credentials
+```
+### GitHub OAuth Credentials
+```bash
 GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
-
-# MongoDB connection string
+```
+### MongoDB connection string
+```bash
 MONGO_URL=
-
-# Secret for session storage
+```
+### Secret for session storage
+```bash
 SESSION_SECRET=
-
-# Type of persistence storage (e.g., 'memory', 'fs', 'mongo')
+```
+### Type of persistence storage (e.g., 'memory', 'fs', 'mongo')
+```bash
 PERSISTANCE=
-
-# Node environment (development or production)
+```
+### Node environment (development or production)
+```bash
 NODE_ENV=
-
-# Google email for some services like sending notifications, etc.
+```
+### Google email for some services like sending notifications, etc.
+```bash
 GOOGLE_EMAIL=
-
-# Password for the Google email account
+```
+### Password for the Google email account
+```bash
 GOOGLE_PASS=
-
+```
 
