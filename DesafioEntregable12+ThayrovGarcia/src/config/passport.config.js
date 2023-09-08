@@ -1,6 +1,3 @@
-import CustomError from '../services/errors/custom-error.js';
-import {DAOFactory} from '../dao/factory.js';
-import EErrors from '../services/errors/enums.js';
 import {Strategy as GitHubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
 import environment from './enviroment.config.js';

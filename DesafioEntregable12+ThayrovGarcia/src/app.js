@@ -5,7 +5,6 @@ import environment from './config/enviroment.config.js';
 import errorHandler from './middlewares/error.middleware.js';
 import {errorRouter} from './routes/error.routes.js';
 import express from 'express';
-import {fileURLToPath} from 'url';
 import handlebars from 'express-handlebars';
 import iniPassport from './config/passport.config.js';
 import {initializeAuthRoutes} from './routes/auth.routes.js';
@@ -82,7 +81,7 @@ const initializeApp = async () => {
 	app.use(errorHandler);
 
 	// Server initialization
-	app.listen(PORT, () => {
+	app.listen(environment.PORT, () => {
 		logger.info(`Server listening at http://localhost:${PORT}`);
 	});
 };
