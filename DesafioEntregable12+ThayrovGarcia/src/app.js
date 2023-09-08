@@ -16,16 +16,32 @@ import mockRouter from './routes/mock.routes.js';
 import passport from 'passport';
 import path from 'path';
 import routerCarts from './routes/carts.routes.js';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
 
 const {PORT} = environment;
 
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
 
+const swaggerOptions = {
+	definition: {
+		openapi: '3.0.1',
+		info: {
+			title: 'E-commerce DOCS',
+			description: 'Este proyecto es para adoptar.',
+		},
+	},
+	apis: [`${__dirname}/docs/**/*.yaml`],
+};
+const specs = swaggerJSDoc(swaggerOptions);
+
 const initializeApp = async () => {
 	const app = express();
 
 	// Middleware setup
+	app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
 	app.use(compression());
 	app.use(express.json());
 	app.use(express.urlencoded({extended: true}));
