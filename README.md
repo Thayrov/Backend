@@ -21,7 +21,7 @@ This project is an educational example of a backend service for an e-commerce pl
     ```
 2. Navigate to the project directory:
     ```bash
-    cd your-repo-name
+    cd Backend
     ```
 3. Install dependencies:
     ```bash
