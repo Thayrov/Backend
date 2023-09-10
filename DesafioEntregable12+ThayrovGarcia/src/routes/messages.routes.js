@@ -1,7 +1,7 @@
 import {isAuthenticated, isUser} from '../middlewares/auth.middleware.js';
 
-import {initializeMessagesRoutes} from '../controllers/messages.controller.js';
 import express from 'express';
+import {initializeMessagesController} from '../controllers/messages.controller.js';
 
 export const initializeMessagesRoutes = async () => {
 	const router = express.Router();
