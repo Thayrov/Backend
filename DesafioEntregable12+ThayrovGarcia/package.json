@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node ./src/app.js production",
-    "dev": "nodemon -e yaml,js ./src/app.js development"
+    "dev": "nodemon -e yaml,js,handlebars ./src/app.js development"
   },
   "keywords": [],
   "author": "Thayrov García",
