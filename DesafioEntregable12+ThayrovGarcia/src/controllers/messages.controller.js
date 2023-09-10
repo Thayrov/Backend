@@ -3,10 +3,9 @@ import EErrors from '../services/errors/enums.js';
 import {logger} from '../config/logger.config.js';
 
 class MessagesController {
-	constructor() {
-		this.messageService = initializeMessageService();
-	}
-
+	init = async () => {
+		this.messageService = await initializeMessageService();
+	};
 	async getAllMessages(req, res) {
 		try {
 			const messages = await this.messageService.getAllMessages();
@@ -47,4 +46,12 @@ class MessagesController {
 	}
 }
 
-export default new MessagesController();
+let messagesController;
+
+export const initializeMessagesController = async () => {
+	if (!messagesController) {
+		messagesController = new MessagesController();
+		await messagesController.init();
+	}
+	return messagesController;
+};

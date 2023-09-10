@@ -4,10 +4,9 @@ import {initializeCartService} from '../services/carts.service.js';
 import {logger} from '../config/logger.config.js';
 
 class CartsController {
-	constructor() {
-		this.cartService = initializeCartService();
-	}
-
+	init = async () => {
+		this.cartService = await initializeCartService();
+	};
 	createCart = async (req, res, next) => {
 		try {
 			const cartData = req.body;
@@ -204,4 +203,12 @@ class CartsController {
 	};
 }
 
-export default new CartsController();
+let cartsController;
+
+export const initializeCartsController = async () => {
+	if (!cartsController) {
+		cartsController = new CartsController();
+		await cartsController.init();
+	}
+	return cartsController;
+};

@@ -8,6 +8,7 @@ import express from 'express';
 import handlebars from 'express-handlebars';
 import iniPassport from './config/passport.config.js';
 import {initializeAuthRoutes} from './routes/auth.routes.js';
+import {initializeCartsRoutes} from './routes/carts.routes.js';
 import {initializeProductsRoutes} from './routes/products.routes.js';
 import {initializeViewsRoutes} from './routes/views.routes.js';
 import {logger} from './config/logger.config.js';
@@ -15,7 +16,6 @@ import mockRouter from './routes/mock.routes.js';
 import passport from 'passport';
 import path from 'path';
 import {rootDir} from './config/dirname.config.js';
-import routerCarts from './routes/carts.routes.js';
 import {specs} from './config/swagger.config.js';
 import swaggerUiExpress from 'swagger-ui-express';
 
@@ -61,6 +61,7 @@ const initializeApp = async () => {
 	const routerProducts = await initializeProductsRoutes();
 	const viewsRouter = await initializeViewsRoutes();
 	const authRouter = await initializeAuthRoutes();
+	const routerCarts = await initializeCartsRoutes();
 
 	// Route setup
 	app.use('/api/products', routerProducts);

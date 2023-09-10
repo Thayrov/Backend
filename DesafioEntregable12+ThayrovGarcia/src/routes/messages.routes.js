@@ -1,10 +1,15 @@
 import {isAuthenticated, isUser} from '../middlewares/auth.middleware.js';
 
-import MessagesController from '../controllers/messages.controller.js';
+import {initializeMessagesRoutes} from '../controllers/messages.controller.js';
 import express from 'express';
-const {createMessage, getAllMessages} = MessagesController;
 
-export const routerMessages = express.Router();
+export const initializeMessagesRoutes = async () => {
+	const router = express.Router();
+	const MessagesControllerInstance = await initializeMessagesController();
 
-routerMessages.get('/', getAllMessages);
-routerMessages.post('/', isAuthenticated, isUser, createMessage);
+	const {createMessage, getAllMessages} = MessagesControllerInstance;
+
+	router.get('/', getAllMessages);
+	router.post('/', isAuthenticated, isUser, createMessage);
+	return router;
+};

@@ -1,33 +1,31 @@
 import {isAuthenticated, isUser} from '../middlewares/auth.middleware.js';
 
-import CartsController from '../controllers/carts.controller.js';
 import express from 'express';
+import {initializeCartsController} from '../controllers/carts.controller.js';
 
-const {
-	createCart,
-	getCartById,
-	addProductToCart,
-	deleteProductFromCart,
-	updateCart,
-	updateProductQuantity,
-	clearCart,
-	finalizePurchase,
-} = CartsController;
+export const initializeCartsRoutes = async () => {
+	const router = express.Router();
+	const CartsControllerInstance = await initializeCartsController();
 
-export const routerCarts = express.Router();
+	const {
+		createCart,
+		getCartById,
+		addProductToCart,
+		deleteProductFromCart,
+		updateCart,
+		updateProductQuantity,
+		clearCart,
+		finalizePurchase,
+	} = CartsControllerInstance;
 
-routerCarts.post('/', createCart);
-routerCarts.get('/:cid', getCartById);
-routerCarts.post(
-	'/:cid/product/:pid',
-	isAuthenticated,
-	isUser,
-	addProductToCart,
-);
-routerCarts.post('/:cid/purchase', isAuthenticated, isUser, finalizePurchase);
-routerCarts.delete('/:cid/products/:pid', deleteProductFromCart);
-routerCarts.put('/:cid', updateCart);
-routerCarts.put('/:cid/products/:pid', updateProductQuantity);
-routerCarts.delete('/:cid', clearCart);
+	router.post('/', createCart);
+	router.get('/:cid', getCartById);
+	router.post('/:cid/product/:pid', isAuthenticated, isUser, addProductToCart);
+	router.post('/:cid/purchase', isAuthenticated, isUser, finalizePurchase);
+	router.delete('/:cid/products/:pid', deleteProductFromCart);
+	router.put('/:cid', updateCart);
+	router.put('/:cid/products/:pid', updateProductQuantity);
+	router.delete('/:cid', clearCart);
 
-export default routerCarts;
+	return router;
+};
