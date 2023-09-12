@@ -5,7 +5,8 @@ import {initializeAuthService} from '../services/auth.service.js';
 import {logger} from './logger.config.js';
 import passport from 'passport';
 
-const {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} = environment;
+const {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, GITHUB_CALLBACK_URL} =
+	environment;
 export default async function iniPassport() {
 	const authService = await initializeAuthService();
 	passport.use(
@@ -60,7 +61,7 @@ export default async function iniPassport() {
 			{
 				clientID: GITHUB_CLIENT_ID,
 				clientSecret: GITHUB_CLIENT_SECRET,
-				callbackURL: 'http://localhost:8080/api/users/githubcallback',
+				callbackURL: GITHUB_CALLBACK_URL,
 			},
 			async (accessToken, _, profile, done) => {
 				try {
