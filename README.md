@@ -11,7 +11,9 @@ This project is an educational example of a backend service for an e-commerce pl
 - [API Documentation](#api-documentation)
 - [Folder Structure](#folder-structure)
 - [Environment Variables](#environment-variables)
-
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+- [Contact](#contact)
 
 ## Installation
 
@@ -110,3 +112,14 @@ GOOGLE_EMAIL=
 GOOGLE_PASS=
 ```
 
+## Contribution Guidelines
+Feel free to open an issue or submit a pull request if you find any bugs or have suggestions for improvements.
+
+## License
+This project is licensed under the MIT License.
+
+## Acknowledgments
+Big thanks to FreeCodeCamp for providing these learning resources.
+
+## Contact
+For any further questions or collaboration, feel free to get in touch via [email](mailto:contact@thayrov.com).
