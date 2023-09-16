@@ -119,7 +119,7 @@ Feel free to open an issue or submit a pull request if you find any bugs or have
 This project is licensed under the MIT License.
 
 ## Acknowledgments
-Big thanks to [Coderhouse](https://www.coderhouse.com) for providing the learning resources.
+Big thanks to <a href="https://www.coderhouse.com" target="_blank">Coderhouse</a> for providing the learning resources.
 
 ## Contact
 For any further questions or collaboration, feel free to get in touch via [email](mailto:contact@thayrov.com).
