@@ -119,7 +119,7 @@ Feel free to open an issue or submit a pull request if you find any bugs or have
 This project is licensed under the MIT License.
 
 ## Acknowledgments
-Big thanks to FreeCodeCamp for providing these learning resources.
+Big thanks to [Coderhouse](https://www.coderhouse.com) for providing the learning resources.
 
 ## Contact
 For any further questions or collaboration, feel free to get in touch via [email](mailto:contact@thayrov.com).
