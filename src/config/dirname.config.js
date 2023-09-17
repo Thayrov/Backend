@@ -7,3 +7,6 @@ const __configDirname = path.dirname(__filename);
 const rootDir = path.resolve(__configDirname, '../');
 
 export {__configDirname, rootDir};
+
+export const isMainModule =
+	path.resolve(process.argv[1]) === `${rootDir}\\app.js`;

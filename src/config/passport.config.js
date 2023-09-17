@@ -86,6 +86,7 @@ export default async function iniPassport() {
 			const adminUser = {
 				_id: 'adminId',
 				email: 'adminCoder@coder.com',
+				password: 'adminCod3r123',
 				role: 'admin',
 			};
 			return done(null, adminUser);

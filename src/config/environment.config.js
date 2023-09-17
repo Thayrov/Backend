@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import {logger} from './logger.config.js';
 
-const environment = {MODE: process.argv[2]};
+const environment = {MODE: process.env.MODE || process.argv[2]};
 const {MODE} = environment;
 
 if (MODE != 'development' && MODE != 'production') {

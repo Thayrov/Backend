@@ -14,6 +14,10 @@ class ProductMemoryDAO {
 		return this.products;
 	}
 
+	async findById(id) {
+		return this.products.find(product => product._id === id);
+	}
+
 	async findByCode(code) {
 		return this.products.find(product => product.code === code);
 	}

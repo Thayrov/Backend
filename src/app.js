@@ -1,3 +1,5 @@
+import {isMainModule, rootDir} from './config/dirname.config.js';
+
 import compression from 'express-compression';
 import {configureSession} from './config/session.config.js';
 import cookieParser from 'cookie-parser';
@@ -15,13 +17,12 @@ import {logger} from './config/logger.config.js';
 import mockRouter from './routes/mock.routes.js';
 import passport from 'passport';
 import path from 'path';
-import {rootDir} from './config/dirname.config.js';
 import {specs} from './config/swagger.config.js';
 import swaggerUiExpress from 'swagger-ui-express';
 
 const {PORT} = environment;
 
-const initializeApp = async () => {
+export const initializeApp = async () => {
 	const app = express();
 
 	// Middleware setup
@@ -81,11 +82,20 @@ const initializeApp = async () => {
 	// Error handling middleware
 	app.use(errorHandler);
 
-	// Server initialization
-	app.listen(environment.PORT, () => {
+	// Return the app object for further use
+	return app;
+};
+
+// This function will initialize the app and start listening on the specified port
+const startServer = async () => {
+	const app = await initializeApp();
+	app.listen(PORT, () => {
 		logger.info(`Server listening at http://localhost:${PORT}`);
 	});
 };
 
-// Initialize the app
-initializeApp();
+// Check if the script is being run directly
+if (isMainModule) {
+	// Initialize the app and start the server
+	startServer();
+}

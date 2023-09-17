@@ -1,6 +1,8 @@
 import {logger} from '../config/logger.config.js';
 
 export const isAuthenticated = (req, res, next) => {
+	console.log('Session ID:', req.session.id);
+	console.log('Session User:', req.session.user);
 	logger.debug('Session:', req.session);
 
 	if (req.isAuthenticated()) {

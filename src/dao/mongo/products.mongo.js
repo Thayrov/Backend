@@ -9,6 +9,10 @@ class ProductMongoDAO {
 		return await ProductModel.find();
 	}
 
+	async findById(id) {
+		return await ProductModel.findById(id);
+	}
+
 	async findByCode(code) {
 		return await ProductModel.findOne({code});
 	}
