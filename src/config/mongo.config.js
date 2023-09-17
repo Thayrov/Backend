@@ -28,14 +28,12 @@ export default class MongoSingleton {
 				await new Promise(resolve => setTimeout(resolve, 2000));
 			}
 		}
-		next(
-			CustomError.createError({
-				name: 'MongoConnectionError',
-				cause: new Error('Failed to connect to MongoDB'),
-				message: 'Max retries reached. Failed to connect to MongoDB.',
-				code: EErrors.DATABASE_ERROR,
-			}),
-		);
+		throw CustomError.createError({
+			name: 'MongoConnectionError',
+			cause: new Error('Failed to connect to MongoDB'),
+			message: 'Max retries reached. Failed to connect to MongoDB.',
+			code: EErrors.DATABASE_ERROR,
+		});
 	}
 
 	static async getInstance() {

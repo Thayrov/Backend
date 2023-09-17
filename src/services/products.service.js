@@ -1,5 +1,6 @@
 import {DAOFactory} from '../dao/factory.js';
 import {logger} from '../config/logger.config.js';
+import mongoose from 'mongoose';
 
 export class ProductService {
 	async init() {
@@ -9,8 +10,8 @@ export class ProductService {
 		}
 	}
 	validateCreateProduct(productData) {
-		const {title, description, code, price, stock, thumbnail} = productData;
-		if (!title || !description || !code || !price || !stock || !thumbnail) {
+		const {title, description, code, price, stock} = productData;
+		if (!title || !description || !code || !price || !stock) {
 			logger.error('validation error: Please complete all fields.');
 			throw 'Validation Error';
 		}
@@ -58,7 +59,9 @@ export class ProductService {
 
 		// Set default owner to 'admin' if not provided
 		if (!productData.owner) {
-			productData.owner = 'admin';
+			productData.owner = new mongoose.Types.ObjectId(
+				'65066e45682d9b489464161b',
+			); // 'admin';
 		} else {
 			// Validate if the user is premium before setting them as owner
 			if (user.role === 'premium') {
@@ -72,6 +75,8 @@ export class ProductService {
 	}
 
 	async updateProduct(id, updatedFields, user) {
+		console.log('Debug: Inside updateProduct. ID:', id);
+
 		const existingProduct = await this.productDAO.findById(id);
 		if (!existingProduct) {
 			throw new Error('Product not found');
@@ -98,6 +103,8 @@ export class ProductService {
 	}
 
 	async deleteProduct(id, user) {
+		console.log('Debug: Inside deleteProduct. ID:', id);
+
 		const existingProduct = await this.productDAO.findById(id);
 		if (!existingProduct) {
 			throw new Error('Product not found');

@@ -9,8 +9,6 @@ const productSchema = new Schema(
 		code: {type: String, required: true, unique: true},
 		price: {type: Number, required: true},
 		stock: {type: Number, required: true},
-		// category: {type: String, required: true},
-		// status: {type: Boolean, required: true, default: true},
 		thumbnails: [String],
 		owner: {
 			type: Schema.Types.ObjectId,
