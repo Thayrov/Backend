@@ -8,6 +8,8 @@ const expect = chai.expect;
 let server;
 let requester;
 let agent;
+let productId;
+
 const testUser = {
 	email: 'testUser@test.com',
 	password: 'testPassword',
@@ -49,16 +51,6 @@ describe('Testing products', function () {
 		});
 	});
 
-	describe('GET /api/products/:pid', () => {
-		it('should return a single product', async () => {
-			const {statusCode, body} = await agent.get(
-				'/api/products/648ab9b49195debc523c885b',
-			);
-			expect(statusCode).to.equal(200);
-			expect(body.product).to.be.an('object');
-		});
-	});
-
 	describe('POST /api/products', () => {
 		it('should create a new product', async () => {
 			const newTestProduct = {
@@ -71,47 +63,56 @@ describe('Testing products', function () {
 			const {statusCode, body} = await agent
 				.post('/api/products')
 				.send(newTestProduct);
+			productId = body._id;
 			expect(statusCode).to.equal(200);
 			expect(body).to.include(newTestProduct);
 		});
 	});
 
+	describe('GET /api/products/:pid', () => {
+		it('should return a single product', async () => {
+			const {statusCode, body} = await agent.get(`/api/products/${productId}`);
+			expect(statusCode).to.equal(200);
+			expect(body.product).to.be.an('object');
+		});
+	});
+
 	describe('PUT /api/products/:pid', () => {
-		it('should update an existing product', async done => {
-			try {
-				const updatedProduct = {
-					title: 'Updated Product',
-					description: 'Updated Product Description',
-					price: 150,
-					stock: 15,
-				};
-
-				const res = await agent
-					.put('/api/products/6506a31891c88c0be660b195')
-					.send(updatedProduct);
-
-				expect(res.statusCode).to.equal(200);
-				expect(res.body).to.include(updatedProduct);
-				done();
-			} catch (error) {
-				done(error);
+		it('should update an existing product', async () => {
+			if (!productId) {
+				throw new Error('Product ID not available for update');
 			}
+			// Fetch the product to ensure it exists
+			const fetchRes = await agent.get(`/api/products/${productId}`);
+			if (fetchRes.statusCode !== 200) {
+				throw new Error('Product not found in database');
+			}
+			const updatedProduct = {
+				title: 'Updated Product',
+				description: 'Updated Product Description',
+				price: 150,
+				stock: 15,
+			};
+			const res = await agent
+				.put(`/api/products/${productId}`)
+				.send(updatedProduct);
+			expect(res.statusCode).to.equal(200);
+			expect(res.body).to.include(updatedProduct);
+			expect(res.body).to.not.have.property('error');
 		});
 	});
 
 	describe('DELETE /api/products/:pid', () => {
-		it('should delete an existing product', async done => {
-			try {
-				const res = await agent.delete(
-					'/api/products/6506a31891c88c0be660b195',
-				);
-
-				expect(res.statusCode).to.equal(200);
-				expect(res.body.message).to.equal('Product deleted successfully');
-				done();
-			} catch (error) {
-				done(error);
+		it('should delete an existing product', async () => {
+			if (!productId) {
+				throw new Error('Product ID not available for deletion');
 			}
+			const res = await agent.delete(`/api/products/${productId}`);
+			expect(res.statusCode).to.equal(200);
+			expect(res.body.message).to.equal(
+				`Product with id ${productId} deleted successfully`,
+			);
+			expect(res.body).to.not.have.property('error');
 		});
 	});
 });

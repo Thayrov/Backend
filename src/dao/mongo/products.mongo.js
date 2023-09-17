@@ -3,6 +3,18 @@ import {logger} from '../../config/logger.config.js';
 import mongoose from 'mongoose';
 
 class ProductMongoDAO {
+	// Utility function to convert id to mongoose ObjectId type
+	getObjectId(id) {
+		try {
+			return id instanceof mongoose.Types.ObjectId
+				? id
+				: new mongoose.Types.ObjectId(id);
+		} catch (error) {
+			logger.error(`Error in converting to ObjectId: ${error.message}`);
+			throw new Error('Invalid ObjectId');
+		}
+	}
+
 	async create(product) {
 		return await ProductModel.create(product);
 	}
@@ -10,33 +22,20 @@ class ProductMongoDAO {
 	async findAll() {
 		return await ProductModel.find();
 	}
+
 	async findById(id) {
+		const objectId = this.getObjectId(id);
 		try {
-			// Validate and convert the ID to an ObjectId instance
-			const objectId =
-				id instanceof mongoose.Types.ObjectId
-					? id
-					: new mongoose.Types.ObjectId(id);
-
-			// Log the operation
 			logger.debug(`Attempting to find product with ID: ${objectId}`);
-
-			// Perform the database query
 			const product = await ProductModel.findById(objectId);
-
-			// Log the result
 			if (product) {
 				logger.info(`Product found: ${product._id}`);
 			} else {
 				logger.warn(`Product with ID: ${objectId} not found`);
 			}
-
 			return product;
 		} catch (error) {
-			// Log the error
 			logger.error(`Error in findById: ${error.message}`);
-
-			// Re-throw the error for higher-level handling
 			throw error;
 		}
 	}
@@ -46,13 +45,19 @@ class ProductMongoDAO {
 	}
 
 	async update(id, product) {
-		console.log('Debug: Inside DAO update. ID:', id);
-		return await ProductModel.findByIdAndUpdate(id, product, {new: true});
+		const objectId = this.getObjectId(id);
+		const updatedProduct = await ProductModel.findByIdAndUpdate(
+			objectId,
+			product,
+			{new: true},
+		);
+		return updatedProduct;
 	}
 
 	async delete(id) {
-		console.log('Debug: Inside DAO delete. ID:', id);
-		return await ProductModel.findByIdAndDelete(id);
+		const objectId = this.getObjectId(id);
+		const deletedProduct = await ProductModel.findByIdAndDelete(objectId);
+		return deletedProduct;
 	}
 }
 

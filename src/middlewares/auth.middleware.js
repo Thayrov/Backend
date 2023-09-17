@@ -2,7 +2,7 @@ import {logger} from '../config/logger.config.js';
 
 export const isAuthenticated = (req, res, next) => {
 	logger.debug('Session:', req.session);
-
+	logger.debug('User:', req.user);
 	if (req.isAuthenticated()) {
 		logger.info('User is authenticated:', req.user);
 		return next();

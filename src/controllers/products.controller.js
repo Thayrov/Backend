@@ -169,6 +169,7 @@ class ProductsController {
 			const updatedProduct = await this.productService.updateProduct(
 				id,
 				updatedFields,
+				req.user,
 			);
 			if (updatedProduct) {
 				res.send(updatedProduct);
@@ -191,7 +192,10 @@ class ProductsController {
 	deleteProduct = async (req, res, next) => {
 		try {
 			const id = req.params.pid;
-			const deletedProduct = await this.productService.deleteProduct(id);
+			const deletedProduct = await this.productService.deleteProduct(
+				id,
+				req.user,
+			);
 			if (deletedProduct) {
 				res.send({message: `Product with id ${id} deleted successfully`});
 			} else {

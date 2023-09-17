@@ -18,16 +18,8 @@ export class ProductService {
 	}
 
 	validateUpdateProduct(id, updatedFields) {
-		const {title, description, code, price, stock, thumbnail} = updatedFields;
-		if (
-			!id ||
-			!title ||
-			!description ||
-			!code ||
-			!price ||
-			!stock ||
-			!thumbnail
-		) {
+		const {title, description, price, stock} = updatedFields;
+		if (!id || !title || !description || !price || !stock) {
 			logger.error('validation error: please complete required data.');
 			throw 'Validation Error';
 		}
@@ -75,11 +67,13 @@ export class ProductService {
 	}
 
 	async updateProduct(id, updatedFields, user) {
-		console.log('Debug: Inside updateProduct. ID:', id);
-
 		const existingProduct = await this.productDAO.findById(id);
+
 		if (!existingProduct) {
 			throw new Error('Product not found');
+		}
+		if (typeof existingProduct._id === 'undefined') {
+			throw new Error('Product _id is undefined');
 		}
 
 		if (
@@ -98,16 +92,21 @@ export class ProductService {
 				throw new Error('Only premium users can set/change the owner');
 			}
 		}
-
-		return await this.productDAO.update(id, updatedFields);
+		const updatedProduct = await this.productDAO.update(id, updatedFields);
+		if (!updatedProduct) {
+			throw new Error('No product was updated');
+		}
+		return updatedProduct;
 	}
 
 	async deleteProduct(id, user) {
-		console.log('Debug: Inside deleteProduct. ID:', id);
-
 		const existingProduct = await this.productDAO.findById(id);
+
 		if (!existingProduct) {
 			throw new Error('Product not found');
+		}
+		if (typeof existingProduct._id === 'undefined') {
+			throw new Error('Product _id is undefined');
 		}
 
 		if (
@@ -117,8 +116,11 @@ export class ProductService {
 		) {
 			throw new Error('You are not authorized to delete this product');
 		}
-
-		return await this.productDAO.delete(id);
+		const deletedProduct = await this.productDAO.delete(id);
+		if (!deletedProduct) {
+			throw new Error('No product was deleted');
+		}
+		return deletedProduct;
 	}
 }
 
