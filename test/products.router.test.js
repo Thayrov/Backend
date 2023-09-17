@@ -1,8 +1,11 @@
-import MongoSingleton from '../src/config/mongo.config.js';
+import {
+	initializeTestEnvironment,
+	loginUser,
+	tearDownTestEnvironment,
+	testUser,
+} from './test-helpers.js';
+
 import chai from 'chai';
-import {initializeApp} from '../src/app.js';
-import mongoose from 'mongoose';
-import supertest from 'supertest';
 
 const expect = chai.expect;
 let server;
@@ -10,34 +13,15 @@ let requester;
 let agent;
 let productId;
 
-const testUser = {
-	email: 'testUser@test.com',
-	password: 'testPassword',
-};
 before(async function () {
 	this.timeout(10000);
-
-	// Initialize MongoDB connection
-	await MongoSingleton.getInstance();
-
-	// Initialize express app
-	const app = await initializeApp();
-	server = app.listen(0); // Listen on a random free port
-	const {port} = server.address();
-	requester = supertest(`http://localhost:${port}`);
-
-	// Create an agent for session persistence
-	agent = supertest.agent(server);
-	// Log in using the agent to maintain session state
-
-	await agent.post('/api/users/login').send(testUser);
+	({server, requester, agent} = await initializeTestEnvironment());
+	await loginUser(agent, testUser);
 });
 
 after(async function () {
 	this.timeout(10000);
-	await requester.get('/logout');
-	await server.close();
-	await mongoose.disconnect();
+	await tearDownTestEnvironment(server, requester);
 });
 
 describe('Testing products', function () {
