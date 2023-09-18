@@ -2,10 +2,13 @@ import {logger} from '../config/logger.config.js';
 
 export const isAuthenticated = (req, res, next) => {
 	if (req.isAuthenticated()) {
-		logger.info('User is authenticated:', req.user);
 		return next();
 	}
-	logger.warn('User is not authenticated');
+	if (!req.isAuthenticated()) {
+		logger.warn('User is not authenticated');
+		return res.status(401).send('Unauthorized');
+	}
+	next();
 	return res.redirect('/login');
 };
 
@@ -23,12 +26,14 @@ export const isAdmin = (req, res, next) => {
 };
 
 export const isUser = (req, res, next) => {
-	if (req.session.user && req.session.user.role === 'user') {
-		return next();
-	} else {
-		logger.warn('Access attempt by non-user entity');
-		return res
-			.status(403)
-			.send('Access denied. Only users can perform this action.');
-	}
+	isAuthenticated(req, res, () => {
+		if (req.user && req.user.role === 'user') {
+			return next();
+		} else {
+			logger.warn('Access attempt by non-user entity');
+			return res
+				.status(403)
+				.send('Access denied. Only users can perform this action.');
+		}
+	});
 };

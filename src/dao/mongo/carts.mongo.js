@@ -1,4 +1,5 @@
 import CartModel from './models/carts.model.js';
+import mongoose from 'mongoose';
 
 class CartMongoDAO {
 	async create(cartData) {
@@ -28,13 +29,19 @@ class CartMongoDAO {
 		cart.products.push(productData);
 		return await cart.save();
 	}
-
 	async deleteProduct(cartId, productId) {
 		const cart = await CartModel.findById(cartId);
-		cart.products = cart.products.filter(
-			p => p.product.toString() !== productId,
+		if (!cart) {
+			throw new Error('Cart not found');
+		}
+		const result = await CartModel.updateOne(
+			{_id: cartId},
+			{$pull: {products: {product: new mongoose.Types.ObjectId(productId)}}},
 		);
-		return await cart.save();
+		if (result.nModified === 0) {
+			throw new Error('Product not found in cart');
+		}
+		return await CartModel.findById(cartId);
 	}
 }
 

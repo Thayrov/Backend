@@ -21,10 +21,10 @@ export const initializeCartsRoutes = async () => {
 	router.post('/', createCart);
 	router.get('/:cid', getCartById);
 	router.post('/:cid/product/:pid', isAuthenticated, isUser, addProductToCart);
-	router.post('/:cid/purchase', isAuthenticated, isUser, finalizePurchase);
 	router.delete('/:cid/products/:pid', deleteProductFromCart);
-	router.put('/:cid', updateCart);
 	router.put('/:cid/products/:pid', updateProductQuantity);
+	router.post('/:cid/purchase', isAuthenticated, isUser, finalizePurchase);
+	router.put('/:cid', updateCart);
 	router.delete('/:cid', clearCart);
 
 	return router;

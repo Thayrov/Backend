@@ -18,23 +18,26 @@ export class CartService {
 		return await this.cartDAO.findById(cartId);
 	}
 
-	async addProductToCart(cartId, productId, user) {
+	async addProductToCart(cartId, productId, quantity, user) {
 		const productToAdd = await this.productService.getProductById(productId);
-		if (!productToAdd) {
-			logger.error('Product not found');
-			throw new Error('Product not found');
+		if (!cartId || !productToAdd) {
+			throw new Error('Cart or Product not found');
 		}
 		if (user.role === 'premium' && productToAdd.owner === user._id) {
 			throw new Error('You cannot add your own product to the cart');
 		}
 		return await this.cartDAO.addProduct(cartId, {
 			product: productId,
-			quantity: 1,
+			quantity: quantity,
 		});
 	}
 
 	async deleteProductFromCart(cartId, productId) {
-		return await this.cartDAO.deleteProduct(cartId, productId);
+		if (!cartId) {
+			throw new Error('Cart not found');
+		}
+		const updatedCart = await this.cartDAO.deleteProduct(cartId, productId);
+		return updatedCart;
 	}
 
 	async updateCart(cartId, products) {
@@ -43,16 +46,29 @@ export class CartService {
 
 	async updateProductQuantity(cartId, productId, quantity) {
 		const cart = await this.getCartById(cartId);
-		const productIndex = cart.products.findIndex(p => p.product === productId);
+		if (!cart) {
+			logger.error('Cart not found.');
+			throw new Error('Cart not found.');
+		}
+		if (!Array.isArray(cart.products)) {
+			logger.error('Cart products not found or not an array.');
+			throw new Error('Cart products not found or not an array.');
+		}
+		const productIndex = cart.products.findIndex(
+			p => p.product && p.product._id.toString() === productId.toString(),
+		);
 		if (productIndex === -1) {
-			logger.error('Product not found in cart');
-			throw new Error('Product not found in cart');
+			logger.error('Product not found in cart.');
+			throw new Error('Product not found in cart.');
 		}
 		cart.products[productIndex].quantity = quantity;
 		return await this.cartDAO.update(cartId, cart);
 	}
 
 	async clearCart(cartId) {
+		if (!cartId) {
+			throw new Error('Cart not found');
+		}
 		return await this.cartDAO.update(cartId, {products: []});
 	}
 

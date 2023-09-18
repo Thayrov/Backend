@@ -26,11 +26,8 @@ class ProductMongoDAO {
 	async findById(id) {
 		const objectId = this.getObjectId(id);
 		try {
-			logger.debug(`Attempting to find product with ID: ${objectId}`);
 			const product = await ProductModel.findById(objectId);
-			if (product) {
-				logger.info(`Product found: ${product._id}`);
-			} else {
+			if (!product) {
 				logger.warn(`Product with ID: ${objectId} not found`);
 			}
 			return product;

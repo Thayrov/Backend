@@ -7,7 +7,10 @@ export const testUser = {
 	email: 'testUser@test.com',
 	password: 'testPassword',
 };
-
+export const testNonAdminUser = {
+	email: 'manuelg@gmail.com',
+	password: '123',
+};
 export async function initializeTestEnvironment() {
 	await MongoSingleton.getInstance();
 	const app = await initializeApp();

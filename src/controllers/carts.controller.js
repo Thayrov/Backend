@@ -59,10 +59,15 @@ class CartsController {
 			const cartId = req.params.cid;
 			const productId = req.params.pid;
 			const quantity = req.body.quantity;
+			const user = req.user;
 			const updatedCart = await this.cartService.addProductToCart(
 				cartId,
 				productId,
 				quantity,
+				user,
+			);
+			logger.info(
+				`Attempting to add product with ID: ${productId} to cart with ID: ${cartId}`,
 			);
 			if (updatedCart) {
 				res.json(updatedCart);
@@ -93,10 +98,15 @@ class CartsController {
 		try {
 			const cartId = req.params.cid;
 			const productId = req.params.pid;
+			const updatedCart = await this.cartService.deleteProductFromCart(
+				cartId,
+				productId,
+			);
 
-			await this.cartService.deleteProductFromCart(cartId, productId);
-
-			res.status(200).json({message: 'Product deleted from cart successfully'});
+			res.status(200).json({
+				message: 'Product deleted from cart successfully',
+				cart: updatedCart,
+			});
 		} catch (err) {
 			logger.error('Error deleting product: ' + err.message);
 			return next(
@@ -136,9 +146,18 @@ class CartsController {
 			const productId = req.params.pid;
 			const quantity = req.body.quantity;
 
-			await this.cartService.updateProductQuantity(cartId, productId, quantity);
+			const updatedCart = await this.cartService.updateProductQuantity(
+				cartId,
+				productId,
+				quantity,
+			);
 
-			res.status(200).json({message: 'Product quantity updated successfully'});
+			res
+				.status(200)
+				.json({
+					message: 'Product quantity updated successfully',
+					cart: updatedCart,
+				});
 		} catch (err) {
 			return next(
 				CustomError.createError({
