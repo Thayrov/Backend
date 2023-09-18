@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
 import {logger} from './logger.config.js';
 
-const environment = {MODE: process.env.MODE || process.argv[2]};
+const environment = {MODE: process.env.TEST_MODE || process.argv[2]};
 const {MODE} = environment;
 
-if (MODE != 'development' && MODE != 'production') {
+if (!['development', 'production'].includes(MODE)) {
 	logger.error('You are not selecting a valid environment');
 	process.exit();
 }
