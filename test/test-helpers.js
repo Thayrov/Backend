@@ -1,4 +1,5 @@
 import MongoSingleton from '../src/config/mongo.config.js';
+import UserModel from '../src/dao/mongo/models/user.model.js';
 import {initializeApp} from '../src/app.js';
 import mongoose from 'mongoose';
 import supertest from 'supertest';
@@ -11,6 +12,15 @@ export const testNonAdminUser = {
 	email: 'manuelg@gmail.com',
 	password: '123',
 };
+export const testAuthUser = {
+	email: `testRegister${Math.random()}@test.com`,
+	password: 'testPassword',
+};
+export const testToggleRoleUser = {
+	email: `testRegister0.09858044218141582@test.com`,
+	password: 'testPassword',
+};
+
 export async function initializeTestEnvironment() {
 	await MongoSingleton.getInstance();
 	const app = await initializeApp();
@@ -29,4 +39,9 @@ export async function tearDownTestEnvironment(server, requester) {
 	await requester.get('/logout');
 	await server.close();
 	await mongoose.disconnect();
+}
+
+export async function getUserIdByEmail(email) {
+	const user = await UserModel.findOne({email: email});
+	return user._id;
 }
