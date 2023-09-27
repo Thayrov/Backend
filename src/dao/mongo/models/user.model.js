@@ -21,6 +21,13 @@ const UserSchema = new Schema({
 	// Added fields for password reset
 	resetPasswordToken: {type: String, required: false},
 	resetPasswordExpires: {type: Date, required: false},
+	documents: [
+		{
+			name: {type: String},
+			reference: {type: String},
+		},
+	],
+	last_connection: {type: Date, required: false},
 });
 
 UserSchema.pre(['find', 'findOne', 'findById'], function () {
