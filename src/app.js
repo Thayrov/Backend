@@ -88,10 +88,14 @@ export const initializeApp = async () => {
 
 // This function will initialize the app and start listening on the specified port
 const startServer = async () => {
-	const app = await initializeApp();
-	app.listen(PORT, () => {
-		logger.info(`Server listening at http://localhost:${PORT}`);
-	});
+	try {
+		const app = await initializeApp();
+		app.listen(PORT, () => {
+			logger.info(`Server listening at http://localhost:${PORT}`);
+		});
+	} catch (error) {
+		logger.error(`Failed to start server: ${error}`);
+	}
 };
 
 // Check if the script is being run directly
