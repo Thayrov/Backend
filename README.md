@@ -70,6 +70,7 @@ http://localhost:PORT/apidocs
   - `routes/`: API routes
   - `services/`: Business logic
   - `views/`: Views made with handlebars
+- `test/`: Tests code
 - `.env`: Environment variables (do not commit)
 - `.gitignore`: Confirm .env file location in here
 - `package.json`: Project metadata and dependencies
@@ -86,6 +87,7 @@ PORT=
 ```bash
 GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
+GITHUB_CALLBACK_URL=
 ```
 ### MongoDB connection string
 ```bash
