@@ -6,6 +6,7 @@ import {initializeAuthService} from '../services/auth.service.js';
 import {logger} from '../config/logger.config.js';
 import nodemailer from 'nodemailer';
 import passport from 'passport';
+import {uploadMiddleware} from '../middlewares/multer.middleware.js';
 
 const {GOOGLE_EMAIL, GOOGLE_PASS, PORT} = environment;
 
@@ -63,7 +64,7 @@ class AuthController {
 					logger.warn('No user returned from authentication');
 					return res.status(401).json({message: 'Invalid credentials'});
 				}
-				req.logIn(user, function (err) {
+				req.logIn(user, async err => {
 					if (err) {
 						return next(
 							CustomError.createError({
@@ -75,6 +76,8 @@ class AuthController {
 						);
 					}
 					logger.info('User logged in successfully:', user);
+					const userId = req.user._id;
+					await this.authService.updateLastUserConnection(userId, new Date());
 					return res.redirect('/profile');
 				});
 			} catch (err) {
@@ -368,6 +371,29 @@ class AuthController {
 	};
 	toggleUserRole = async (req, res, next) => {
 		const {uid} = req.params;
+		const user = await this.authService.findUserById(uid);
+		if (!user) {
+			return res.status(404).json({message: 'User not found'});
+		}
+
+		const requiredDocs = [
+			'Identificacion',
+			'ComprobanteDeDomicilio',
+			'ComprobanteDeEstadoDeCuenta',
+		];
+		console.log('Required Docs:', requiredDocs);
+
+		const uploadedDocs = user.documents.map(doc =>
+			doc.name.split('.').slice(0, -1).join('.'),
+		);
+		console.log('Uploaded Docs:', uploadedDocs);
+
+		const allDocsUploaded = requiredDocs.every(doc =>
+			uploadedDocs.includes(doc),
+		);
+		if (!allDocsUploaded) {
+			return res.status(400).json({message: 'Incomplete documentation'});
+		}
 		try {
 			const updatedUser = await this.authService.toggleUserRole(uid);
 			return res.status(200).json({message: 'User role updated', updatedUser});
@@ -381,6 +407,32 @@ class AuthController {
 				}),
 			);
 		}
+	};
+	uploadDocuments = async (req, res, next) => {
+		uploadMiddleware(req, res, async err => {
+			if (err) {
+				return res.status(500).json({message: 'Upload failed', err});
+			}
+
+			const userId = req.params.uid;
+			const files = req.files;
+			const documents = files.map(file => ({
+				name: file.originalname,
+				reference: file.path,
+			}));
+
+			try {
+				const updatedUser = await this.authService.addDocumentsToUser(
+					userId,
+					documents,
+				);
+				return res
+					.status(200)
+					.json({message: 'Documents uploaded', updatedUser});
+			} catch (error) {
+				return res.status(500).json({message: 'Database update failed', error});
+			}
+		});
 	};
 }
 

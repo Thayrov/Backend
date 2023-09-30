@@ -24,6 +24,21 @@ class UserMongoDAO {
 	async delete(id) {
 		return await UserModel.findByIdAndDelete(id);
 	}
+	async addDocuments(userId, documents) {
+		return await UserModel.findByIdAndUpdate(
+			userId,
+			{$push: {documents: {$each: documents}}},
+			{new: true},
+		);
+	}
+
+	async updateLastConnection(userId, lastConnection) {
+		return await UserModel.findByIdAndUpdate(
+			userId,
+			{last_connection: lastConnection},
+			{new: true},
+		);
+	}
 }
 
 export default new UserMongoDAO();

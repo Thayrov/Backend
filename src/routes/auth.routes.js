@@ -16,6 +16,7 @@ export const initializeAuthRoutes = async () => {
 		renderForgotPasswordForm,
 		renderResetPassword,
 		toggleUserRole,
+		uploadDocuments,
 	} = AuthControllerInstance;
 
 	router.post('/register', registerUser);
@@ -28,6 +29,7 @@ export const initializeAuthRoutes = async () => {
 	router.get('/reset-password', renderResetPassword);
 	router.post('/reset-password', resetPassword);
 	router.put('/premium/:uid', toggleUserRole);
+	router.post('/:uid/documents', uploadDocuments);
 
 	return router;
 };

@@ -128,6 +128,13 @@ class AuthService {
 		await this.userDAO.update({_id: userId}, {role: user.role});
 		return user;
 	}
+	async addDocumentsToUser(userId, documents) {
+		return await this.userDAO.addDocuments(userId, documents);
+	}
+
+	async updateLastUserConnection(userId, lastConnection) {
+		return await this.userDAO.updateLastConnection(userId, lastConnection);
+	}
 }
 
 let authService;
