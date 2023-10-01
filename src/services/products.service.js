@@ -1,3 +1,8 @@
+import {
+	productDeletionNoticeMailOptions,
+	transporter,
+} from '../config/nodemailer.config.js';
+
 import {DAOFactory} from '../dao/factory.js';
 import {logger} from '../config/logger.config.js';
 import mongoose from 'mongoose';
@@ -120,7 +125,15 @@ export class ProductService {
 		if (!deletedProduct) {
 			throw new Error('No product was deleted');
 		}
-		return deletedProduct;
+		if (user.role === 'premium') {
+			const mailOptions = productDeletionNoticeMailOptions(user, id);
+			await transporter.sendMail(mailOptions);
+		}
+
+		return {
+			message: `Product with id ${id} deleted successfully`,
+			deletedProduct,
+		};
 	}
 }
 
