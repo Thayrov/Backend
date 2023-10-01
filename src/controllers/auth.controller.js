@@ -1,14 +1,10 @@
 import CustomError from '../services/errors/custom-error.js';
 import EErrors from '../services/errors/enums.js';
 import {UserResponseDTO} from '../dto/user.dto.js';
-import environment from '../config/environment.config.js';
 import {initializeAuthService} from '../services/auth.service.js';
 import {logger} from '../config/logger.config.js';
-import nodemailer from 'nodemailer';
 import passport from 'passport';
 import {uploadMiddleware} from '../middlewares/multer.middleware.js';
-
-const {GOOGLE_EMAIL, GOOGLE_PASS, PORT} = environment;
 
 class AuthController {
 	init = async () => {
@@ -286,49 +282,18 @@ class AuthController {
 
 	requestPasswordReset = async (req, res, next) => {
 		try {
-			logger.debug('Starting password reset process');
 			const email = req.body.email;
-			logger.debug(`Email: ${email}`);
-
-			const token = await this.authService.generateResetToken(email);
-			logger.debug(`Token: ${token}`);
-
-			const transporter = nodemailer.createTransport({
-				service: 'gmail',
-				port: 587,
-				auth: {
-					user: GOOGLE_EMAIL,
-					pass: GOOGLE_PASS,
-				},
-			});
-
-			const mailOptions = {
-				from: GOOGLE_EMAIL,
-				to: email,
-				subject: 'Password Reset',
-				html: `<html>
-				<head>
-					<title>Reset Password</title>
-				</head>
-				<body>
-					<h1>Hello,</h1>
-					<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>
-					<p>Please click on the following link, or paste it into your browser to complete the process:</p>
-					<a href="http://localhost:${PORT}/api/users/reset-password?token=${token}&email=${email}">Reset Password</a>
-					<p>This link will expire in one hour.</p>
-					<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
-				</body>
-				</html>`,
-			};
-
-			await transporter.sendMail(mailOptions);
-			logger.debug('Mail sent successfully');
-
+			await this.authService.requestPasswordReset(email);
 			res.status(200).json({message: 'Password reset link sent.'});
 		} catch (error) {
-			logger.debug('Error in requestPasswordReset: ', error);
-
-			next(error);
+			next(
+				CustomError.createError({
+					name: 'requestPasswordResetError',
+					cause: error,
+					message: 'Error requesting Password Reset',
+					code: EErrors.INTERNAL_SERVER_ERROR,
+				}),
+			);
 		}
 	};
 
@@ -346,7 +311,14 @@ class AuthController {
 				// Redirect to a view where the user can request a new reset email
 				return res.redirect('/api/users/forgot-password');
 			}
-			next(error);
+			next(
+				CustomError.createError({
+					name: 'renderResetPasswordError',
+					cause: error,
+					message: 'Error rendering Reset Password',
+					code: EErrors.INTERNAL_SERVER_ERROR,
+				}),
+			);
 		}
 	};
 
@@ -370,31 +342,8 @@ class AuthController {
 		}
 	};
 	toggleUserRole = async (req, res, next) => {
-		const {uid} = req.params;
-		const user = await this.authService.findUserById(uid);
-		if (!user) {
-			return res.status(404).json({message: 'User not found'});
-		}
-
-		const requiredDocs = [
-			'Identificacion',
-			'ComprobanteDeDomicilio',
-			'ComprobanteDeEstadoDeCuenta',
-		];
-		console.log('Required Docs:', requiredDocs);
-
-		const uploadedDocs = user.documents.map(doc =>
-			doc.name.split('.').slice(0, -1).join('.'),
-		);
-		console.log('Uploaded Docs:', uploadedDocs);
-
-		const allDocsUploaded = requiredDocs.every(doc =>
-			uploadedDocs.includes(doc),
-		);
-		if (!allDocsUploaded) {
-			return res.status(400).json({message: 'Incomplete documentation'});
-		}
 		try {
+			const {uid} = req.params;
 			const updatedUser = await this.authService.toggleUserRole(uid);
 			return res.status(200).json({message: 'User role updated', updatedUser});
 		} catch (error) {
@@ -433,6 +382,37 @@ class AuthController {
 				return res.status(500).json({message: 'Database update failed', error});
 			}
 		});
+	};
+
+	getAllUsers = async (req, res, next) => {
+		try {
+			const simplifiedUsers = await this.authService.getAllUsers();
+			res.status(200).json(simplifiedUsers);
+		} catch (err) {
+			next(
+				CustomError.createError({
+					name: 'getAllUsersError',
+					cause: err,
+					message: 'Error getting All Users',
+					code: EErrors.INTERNAL_SERVER_ERROR,
+				}),
+			);
+		}
+	};
+	cleanupInactiveUsers = async (req, res, next) => {
+		try {
+			const result = await this.authService.removeInactiveUsersAndNotify();
+			res.status(200).json(result);
+		} catch (err) {
+			next(
+				CustomError.createError({
+					name: 'cleanupInactiveUsersError',
+					cause: err,
+					message: 'Error cleaning Inactive Users',
+					code: EErrors.INTERNAL_SERVER_ERROR,
+				}),
+			);
+		}
 	};
 }
 

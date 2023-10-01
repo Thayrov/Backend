@@ -17,6 +17,8 @@ export const initializeAuthRoutes = async () => {
 		renderResetPassword,
 		toggleUserRole,
 		uploadDocuments,
+		getAllUsers,
+		cleanupInactiveUsers,
 	} = AuthControllerInstance;
 
 	router.post('/register', registerUser);
@@ -30,6 +32,8 @@ export const initializeAuthRoutes = async () => {
 	router.post('/reset-password', resetPassword);
 	router.put('/premium/:uid', toggleUserRole);
 	router.post('/:uid/documents', uploadDocuments);
+	router.get('/all-users', getAllUsers);
+	router.delete('/cleanup-users', cleanupInactiveUsers);
 
 	return router;
 };

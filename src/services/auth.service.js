@@ -4,6 +4,9 @@ import {DAOFactory} from '../dao/factory.js';
 import crypto from 'crypto';
 import fetch from 'node-fetch';
 import {logger} from '../config/logger.config.js';
+import nodemailer from 'nodemailer';
+
+const {GOOGLE_EMAIL, GOOGLE_PASS, PORT} = process.env;
 
 class AuthService {
 	async init() {
@@ -83,6 +86,40 @@ class AuthService {
 		return token;
 	}
 
+	async requestPasswordReset(email) {
+		const token = await this.generateResetToken(email);
+
+		const transporter = nodemailer.createTransport({
+			service: 'gmail',
+			port: 587,
+			auth: {
+				user: GOOGLE_EMAIL,
+				pass: GOOGLE_PASS,
+			},
+		});
+
+		const mailOptions = {
+			from: GOOGLE_EMAIL,
+			to: email,
+			subject: 'Password Reset',
+			html: `<html>
+			<head>
+				<title>Reset Password</title>
+			</head>
+			<body>
+				<h1>Hello,</h1>
+				<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>
+				<p>Please click on the following link, or paste it into your browser to complete the process:</p>
+				<a href="http://localhost:${PORT}/api/users/reset-password?token=${token}&email=${email}">Reset Password</a>
+				<p>This link will expire in one hour.</p>
+				<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
+			</body>
+			</html>`,
+		};
+
+		await transporter.sendMail(mailOptions);
+	}
+
 	async validateResetToken(email, token) {
 		const user = await this.userDAO.findOne({
 			email,
@@ -124,16 +161,88 @@ class AuthService {
 		if (!user) {
 			throw new Error('User not found');
 		}
+
+		const requiredDocs = [
+			'Identificacion',
+			'ComprobanteDeDomicilio',
+			'ComprobanteDeEstadoDeCuenta',
+		];
+
+		const uploadedDocs = user.documents.map(doc =>
+			doc.name.split('.').slice(0, -1).join('.'),
+		);
+
+		const allDocsUploaded = requiredDocs.every(doc =>
+			uploadedDocs.includes(doc),
+		);
+		if (!allDocsUploaded) {
+			throw new Error('Incomplete documentation');
+		}
+
 		user.role = user.role === 'premium' ? 'user' : 'premium';
 		await this.userDAO.update({_id: userId}, {role: user.role});
+
 		return user;
 	}
+
 	async addDocumentsToUser(userId, documents) {
 		return await this.userDAO.addDocuments(userId, documents);
 	}
 
 	async updateLastUserConnection(userId, lastConnection) {
 		return await this.userDAO.updateLastConnection(userId, lastConnection);
+	}
+
+	async getAllUsers() {
+		const users = await this.userDAO.findAll();
+		const simplifiedUsers = users.map(user => ({
+			name: `${user.first_name} ${user.last_name}`,
+			email: user.email,
+			role: user.role,
+		}));
+		return simplifiedUsers;
+	}
+
+	async removeInactiveUsersAndNotify() {
+		const twoDaysAgo = new Date(Date.now() - 48 * 60 * 60 * 1000);
+		const deletedUsers = await this.userDAO.removeInactiveUsers(twoDaysAgo);
+
+		// Initialize nodemailer
+		const transporter = nodemailer.createTransport({
+			service: 'gmail',
+			port: 587,
+			auth: {
+				user: GOOGLE_EMAIL,
+				pass: GOOGLE_PASS,
+			},
+		});
+
+		// Check if any user was deleted
+		if (deletedUsers.deletedCount === 0) {
+			return {message: 'No users to delete'};
+		}
+
+		// Loop through deleted users and send an email to each
+		for (const user of deletedUsers) {
+			const mailOptions = {
+				from: GOOGLE_EMAIL,
+				to: user.email,
+				subject: 'Account Deletion Notice',
+				html: `<html>
+			<head>
+				<title>Account Deletion</title>
+			</head>
+			<body>
+				<h1>Hello ${user.first_name},</h1>
+				<p>Your account has been deleted due to inactivity.</p>
+				<p>If you wish to use our services again, you'll need to re-register.</p>
+			</body>
+			</html>`,
+			};
+			await transporter.sendMail(mailOptions);
+		}
+
+		return {message: 'Users deleted', deletedUsers};
 	}
 }
 

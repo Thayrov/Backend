@@ -39,6 +39,10 @@ class UserMongoDAO {
 			{new: true},
 		);
 	}
+	async removeInactiveUsers(date) {
+		const result = await UserModel.deleteMany({last_connection: {$lt: date}});
+		return result;
+	}
 }
 
 export default new UserMongoDAO();
