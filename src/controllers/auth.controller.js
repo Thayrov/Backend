@@ -414,6 +414,38 @@ class AuthController {
 			);
 		}
 	};
+	renderAdminUsers = async (req, res, next) => {
+		try {
+			const users = await this.authService.fetchCompleteUsers();
+			return res.render('admin-users', {users});
+		} catch (err) {
+			return next(
+				CustomError.createError({
+					name: 'RenderAdminUsersError',
+					cause: err,
+					message: 'Error rendering admin users page',
+					code: EErrors.INTERNAL_SERVER_ERROR,
+				}),
+			);
+		}
+	};
+
+	deleteUserById = async (req, res, next) => {
+		try {
+			const {uid} = req.params;
+			await this.authService.removeUserById(uid);
+			return res.status(200).json({message: 'User deleted successfully.'});
+		} catch (error) {
+			return next(
+				CustomError.createError({
+					name: 'DeleteUserError',
+					cause: error,
+					message: 'Error deleting user',
+					code: EErrors.INTERNAL_SERVER_ERROR,
+				}),
+			);
+		}
+	};
 }
 
 let authController;

@@ -194,6 +194,20 @@ class AuthService {
 
 		return {message: 'Users deleted', deletedUsers};
 	}
+
+	async fetchCompleteUsers() {
+		try {
+			const users = await this.userDAO.findAll();
+			const safeUsers = users.map(user => ({...user._doc}));
+			return safeUsers;
+		} catch (err) {
+			throw new Error('Error fetching complete user objects');
+		}
+	}
+
+	async removeUserById(userId) {
+		return await this.userDAO.delete(userId);
+	}
 }
 
 let authService;

@@ -1,5 +1,6 @@
 import express from 'express';
 import {initializeAuthController} from '../controllers/auth.controller.js';
+import {isAdmin} from '../middlewares/auth.middleware.js';
 
 export const initializeAuthRoutes = async () => {
 	const router = express.Router();
@@ -19,6 +20,7 @@ export const initializeAuthRoutes = async () => {
 		uploadDocuments,
 		getAllUsers,
 		cleanupInactiveUsers,
+		deleteUserById,
 	} = AuthControllerInstance;
 
 	router.post('/register', registerUser);
@@ -34,6 +36,7 @@ export const initializeAuthRoutes = async () => {
 	router.post('/:uid/documents', uploadDocuments);
 	router.get('/all-users', getAllUsers);
 	router.delete('/cleanup-users', cleanupInactiveUsers);
+	router.delete('/delete-user/:uid', isAdmin, deleteUserById);
 
 	return router;
 };

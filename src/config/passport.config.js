@@ -82,24 +82,14 @@ export default async function iniPassport() {
 	});
 
 	passport.deserializeUser(async (id, done) => {
-		if (id === 'adminId') {
-			const adminUser = {
-				_id: 'adminId',
-				email: 'adminCoder@coder.com',
-				password: 'adminCod3r123',
-				role: 'admin',
-			};
-			return done(null, adminUser);
-		} else {
-			try {
-				let user = await authService.findUserById(id);
-				done(null, user);
-			} catch (err) {
-				logger.error(`Deserialization failed for user ID ${id}`);
-				return done(null, false, {
-					message: 'Error during user deserialization',
-				});
-			}
+		try {
+			let user = await authService.findUserById(id);
+			done(null, user);
+		} catch (err) {
+			logger.error(`Deserialization failed for user ID ${id}`);
+			return done(null, false, {
+				message: 'Error during user deserialization',
+			});
 		}
 	});
 }

@@ -16,6 +16,7 @@ export const initializeViewsRoutes = async () => {
 		renderLoginForm,
 		renderProfile,
 		renderRegisterForm,
+		renderAdminUsers,
 	} = AuthControllerInstance;
 
 	router.get('/view/products/', isAuthenticated, getViewAllProducts);
@@ -26,5 +27,7 @@ export const initializeViewsRoutes = async () => {
 	router.get('/profile', isAuthenticated, renderProfile);
 	router.get('/admin', isAdmin, renderAdmin);
 	router.get('/logout', handleLogout);
+	router.get('/admin-users', isAdmin, renderAdminUsers);
+
 	return router;
 };
