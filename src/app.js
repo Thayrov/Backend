@@ -14,6 +14,7 @@ import {initializeCartsRoutes} from './routes/carts.routes.js';
 import {initializeProductsRoutes} from './routes/products.routes.js';
 import {initializeViewsRoutes} from './routes/views.routes.js';
 import {logger} from './config/logger.config.js';
+import {loggerRouter} from './routes/logger.routes.js';
 import mockRouter from './routes/mock.routes.js';
 import passport from 'passport';
 import path from 'path';
@@ -45,15 +46,7 @@ export const initializeApp = async () => {
 	app.use(express.static(path.join(rootDir, 'public')));
 
 	// Logger test route
-	app.get('/loggerTest', (req, res) => {
-		logger.debug('This is a debug log');
-		logger.http('This is an http log');
-		logger.info('This is an info log');
-		logger.warn('This is a warning log');
-		logger.error('This is an error log');
-		logger.fatal('This is a fatal log');
-		res.send('Logs generated! Check your console and errors.log file.');
-	});
+	app.use('/loggerTest', loggerRouter);
 
 	// Swagger docs route
 	app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
