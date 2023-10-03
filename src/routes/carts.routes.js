@@ -1,5 +1,6 @@
 import {isAuthenticated, isUser} from '../middlewares/auth.middleware.js';
 
+import {ensureCart} from '../middlewares/session.middleware.js';
 import express from 'express';
 import {initializeCartsController} from '../controllers/carts.controller.js';
 
@@ -20,7 +21,13 @@ export const initializeCartsRoutes = async () => {
 
 	router.post('/', createCart);
 	router.get('/:cid', getCartById);
-	router.post('/:cid/product/:pid', isAuthenticated, isUser, addProductToCart);
+	router.post(
+		'/:cid/product/:pid',
+		ensureCart,
+		isAuthenticated,
+		isUser,
+		addProductToCart,
+	);
 	router.delete('/:cid/products/:pid', deleteProductFromCart);
 	router.put('/:cid/products/:pid', updateProductQuantity);
 	router.post('/:cid/purchase', isAuthenticated, isUser, finalizePurchase);

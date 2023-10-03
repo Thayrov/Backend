@@ -1,18 +1,20 @@
 import {logger} from '../config/logger.config.js';
 
 export const isAuthenticated = (req, res, next) => {
+	res.locals.userIsLoggedIn = req.isAuthenticated();
+
 	if (req.isAuthenticated()) {
 		return next();
 	}
+
 	if (!req.isAuthenticated()) {
 		logger.warn('User is not authenticated');
 		return res.status(401).send('Unauthorized');
 	}
-	next();
-	return res.redirect('/login');
 };
 
 export const isAdmin = (req, res, next) => {
+	res.locals.userIsAdmin = req.isAdmin();
 	isAuthenticated(req, res, () => {
 		if (req.user && req.user.role === 'admin') {
 			return next();
