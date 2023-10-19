@@ -62,13 +62,8 @@ class ProductsController {
 				limit,
 				...query,
 			});
-			console.log(
-				'Session Cart ID in products controller:',
-				req.session.cartId,
-			);
-
 			res.render('products', {
-				cartId: req.session.cartId,
+				cartId: res.locals.cartId,
 				status: 'Success',
 				payload: products.map(product => ({
 					id: product._id.toString(),

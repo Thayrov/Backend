@@ -56,7 +56,7 @@ class CartsController {
 
 	addProductToCart = async (req, res, next) => {
 		try {
-			const cartId = req.params.cid;
+			const cartId = res.locals.cartId;
 			const productId = req.params.pid;
 			const quantity = req.body.quantity;
 			const user = req.user;
@@ -152,12 +152,10 @@ class CartsController {
 				quantity,
 			);
 
-			res
-				.status(200)
-				.json({
-					message: 'Product quantity updated successfully',
-					cart: updatedCart,
-				});
+			res.status(200).json({
+				message: 'Product quantity updated successfully',
+				cart: updatedCart,
+			});
 		} catch (err) {
 			return next(
 				CustomError.createError({

@@ -1,6 +1,7 @@
 import CustomError from '../services/errors/custom-error.js';
 import EErrors from '../services/errors/enums.js';
 import {UserResponseDTO} from '../dto/user.dto.js';
+import {ensureCart} from '../middlewares/session.middleware.js';
 import {initializeAuthService} from '../services/auth.service.js';
 import {logger} from '../config/logger.config.js';
 import passport from 'passport';
@@ -59,23 +60,26 @@ class AuthController {
 				if (!user) {
 					logger.warn('No user returned from authentication');
 					return res.status(401).json({message: 'Invalid credentials'});
+				} else {
+					req.logIn(user, async err => {
+						if (err) {
+							return next(
+								CustomError.createError({
+									name: 'LoginError',
+									cause: err,
+									message: 'Error logging in user',
+									code: EErrors.AUTHENTICATION_ERROR,
+								}),
+							);
+						}
+						logger.info('User logged in successfully:', user);
+						const userId = req.user._id;
+						await this.authService.updateLastUserConnection(userId, new Date());
+						if (!res.headersSent) {
+							return res.redirect('/profile');
+						}
+					});
 				}
-				req.logIn(user, async err => {
-					if (err) {
-						return next(
-							CustomError.createError({
-								name: 'LoginError',
-								cause: err,
-								message: 'Error logging in user',
-								code: EErrors.AUTHENTICATION_ERROR,
-							}),
-						);
-					}
-					logger.info('User logged in successfully:', user);
-					const userId = req.user._id;
-					await this.authService.updateLastUserConnection(userId, new Date());
-					return res.redirect('/profile');
-				});
 			} catch (err) {
 				return res.status(500).json({message: err.message});
 			}

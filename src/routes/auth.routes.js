@@ -1,3 +1,4 @@
+import {ensureCart} from '../middlewares/session.middleware.js';
 import express from 'express';
 import {initializeAuthController} from '../controllers/auth.controller.js';
 import {isAdmin} from '../middlewares/auth.middleware.js';
@@ -24,7 +25,7 @@ export const initializeAuthRoutes = async () => {
 	} = AuthControllerInstance;
 
 	router.post('/register', registerUser);
-	router.post('/login', loginUser);
+	router.post('/login', ensureCart, loginUser);
 	router.get('/github', githubLogin);
 	router.get('/githubcallback', githubCallback);
 	router.get('/current', getCurrentUser);

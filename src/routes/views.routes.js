@@ -1,5 +1,6 @@
 import {isAdmin, isAuthenticated} from '../middlewares/auth.middleware.js';
 
+import {ensureCart} from '../middlewares/session.middleware.js';
 import express from 'express';
 import {initializeAuthController} from '../controllers/auth.controller.js';
 import {initializeProductsController} from '../controllers/products.controller.js';
@@ -19,7 +20,12 @@ export const initializeViewsRoutes = async () => {
 		renderAdminUsers,
 	} = AuthControllerInstance;
 
-	router.get('/view/products/', isAuthenticated, getViewAllProducts);
+	router.get(
+		'/view/products/',
+		ensureCart,
+		isAuthenticated,
+		getViewAllProducts,
+	);
 	router.get('/view/products/:pid', isAuthenticated, getViewProductById);
 	router.get('/', renderLoginForm);
 	router.get('/login', renderLoginForm);

@@ -29,7 +29,7 @@ export const isAdmin = (req, res, next) => {
 
 export const isUser = (req, res, next) => {
 	isAuthenticated(req, res, () => {
-		if (req.user && req.user.role === 'user') {
+		if (req.user && (req.user.role === 'user' || req.user.role === 'premium')) {
 			return next();
 		} else {
 			logger.warn('Access attempt by non-user entity');

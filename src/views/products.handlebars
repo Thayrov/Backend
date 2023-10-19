@@ -25,7 +25,6 @@
     height: auto;
   }
 </style>
-
   <h1>Products</h1>
   <div class="product-grid">
     {{#each payload}}
@@ -35,7 +34,7 @@
         <p>Price: {{price}}</p>
         <p>Stock: {{stock}}</p>
         <img src="{{thumbnails}}" alt="{{name}}">
-        <form action="/api/carts/{{cartId}}/product/{{id}}" method="POST">
+        <form action="/api/carts/{{../cartId}}/product/{{id}}" method="POST">
           <button type="submit">Add to Cart</button>
         </form>
       </div>
