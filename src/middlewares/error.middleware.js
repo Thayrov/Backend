@@ -41,6 +41,7 @@ export default (error, req, res, next) => {
 
     // 500 Internal Server Error
     case EErrors.DATABASE_ERROR:
+    case EErrors.INTERNAL_SERVER_ERROR:
     case EErrors.PRODUCT_OUT_OF_STOCK:
       res.status(500).send({status: 'error', error: error.name, cause: error.cause});
       break;

@@ -7,6 +7,6 @@ export default class CustomError {
     error.name = name;
     error.code = code;
     logger.error(`CustomError triggered: ${JSON.stringify(error)}`);
-    throw error;
+    return error;
   }
 }

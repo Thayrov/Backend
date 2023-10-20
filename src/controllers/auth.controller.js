@@ -346,6 +346,13 @@ class AuthController {
       const updatedUser = await this.authService.toggleUserRole(uid);
       return res.status(200).json({message: 'User role updated', updatedUser});
     } catch (error) {
+      logger.error('Caught an error:', error); // Log para depuración
+
+      if (error.name === 'ToggleRoleError' && error.cause.message === 'Incomplete documentation') {
+        return res
+          .status(400)
+          .send({message: 'User cannot change role due to incomplete documentation'});
+      }
       return next(
         CustomError.createError({
           name: 'ToggleRoleError',
