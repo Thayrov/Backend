@@ -35,7 +35,8 @@
         <p>Stock: {{stock}}</p>
         <img src="{{thumbnails}}" alt="{{name}}">
         <form action="/api/carts/{{../cartId}}/product/{{id}}" method="POST">
-          <button type="submit">Add to Cart</button>
+          <input type="number" name="quantity" min="1" value="1">
+          <button type="submit" class="add-to-cart-button button-link">Add to Cart</button>
         </form>
       </div>
     {{/each}}
@@ -55,3 +56,5 @@
   {{#if nextLink}}
     <a href="{{nextLink}}">Next Page</a>
   {{/if}}
+
+<script src='/js/cartLogic.js'></script>

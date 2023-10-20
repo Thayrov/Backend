@@ -1,18 +1,55 @@
+<style>
+  th {color:black} .cart-container { display: flex; flex-direction: column; align-items: center;
+  gap: 20px; } .cart-table { border-collapse: collapse; width: 70%; border: 1px solid #ccc; }
+  .cart-table th, .cart-table td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+  .cart-table th { background-color: #f4f4f4; } .cart-table tbody tr:nth-child(even) {
+  background-color: #808080; } .button-link { display: inline-block; padding: 10px;
+  background-color: #4CAF50; color: white; border: none; border-radius: 5px; text-decoration: none;
+  text-align: center; cursor: pointer; } .button-link:hover { background-color: #45a049;
+  }
+</style>
+
+<div class='cart-container'>
   <h1>Cart</h1>
-  <table>
+    {{#if products.length}}
+  <table class='cart-table'>
     <thead>
       <tr>
         <th>Title</th>
+        <th>Price</th>
         <th>Quantity</th>
+        <th>Total Price</th>
+        <th>Update Quantity</th>
+        <th>Remove Product</th>
       </tr>
     </thead>
     <tbody>
       {{#each products}}
-      <tr>
-        <td>{{this.product.title}}</td>
-        <td>{{this.quantity}}</td>
-      </tr>
+        <tr>
+          <td>{{this.title}}</td>
+          <td>{{this.price}}</td>
+          <td>{{this.quantity}}</td>
+          <td>{{multiply this.price this.quantity}}</td>
+          <td>
+            <form action="/api/carts/{{../cartId}}/products/{{this.id}}" method="POST" class="update-form">
+              <input type="number" name="quantity" min="1" value="{{this.quantity}}">
+              <button type="submit" class="update-quantity-button button-link">Update</button>
+            </form>
+          </td>
+          <td>
+            <button class="remove-product-button button-link" data-product-id="{{this.id}}" data-cart-id="{{../cartId}}">Remove</button>
+          </td>
+        </tr>
       {{/each}}
     </tbody>
   </table>
+  <div>
+    <button class="clear-cart-button button-link" data-cart-id="{{cartId}}">Clear Cart</button>
+    <button class="buy-button button-link" data-cart-id="{{cartId}}">Buy</button>
+  </div>
+  {{else}}
+    <h2>There is nothing in the cart.</h2>
+  {{/if}}
+</div>
 
+<script src='/js/cartLogic.js'></script>

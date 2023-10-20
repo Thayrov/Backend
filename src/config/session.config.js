@@ -19,7 +19,6 @@ export const configureSession = () => {
     });
   } else {
     logger.warn('MongoDB instance not available. Session initialization skipped.');
-    logger.info('next() called without argument');
     return (req, res, next) => next();
   }
 };

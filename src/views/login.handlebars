@@ -1,103 +1,32 @@
-
 <style>
 
-    div {
-        width: 300px;
-        margin: 0 auto;
-        margin-top: 20vh;
-        padding: 20px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        background-color: #24292E;
-        border-radius: 10px;
-    }
-
-    h1 {
-        text-align: center;
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    form {
-        display: flex;
-        flex-direction: column;
-    }
-
-    label {
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-
-    input[type="email"], input[type="password"] {
-        margin-bottom: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
-    input[type="submit"] {
-        padding: 10px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    input[type="submit"]:hover {
-        background-color: #45a049;
-    }
-
-    p {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    a {
-        color: #333;
-        text-decoration: none;
-        font-size: 12px;
-    }
-
-    a:hover {
-        color: #4CAF50;
-    }
-    .button-link {
-    display: inline-block;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    text-align: center;
-    
-    cursor: pointer;
-    width: 93%;
-    }
-
-    .button-link:hover {
-        background-color: #45a049;
-    }
+  div { width: 300px; margin: 0 auto; margin-top: 20vh; padding: 20px; box-shadow: 0px 0px 10px
+  rgba(0, 0, 0, 0.1); background-color: #24292E; border-radius: 10px; } h1 { text-align: center;
+  font-size: 24px; margin-bottom: 20px; } form { display: flex; flex-direction: column; } label {
+  font-weight: bold; margin-bottom: 5px; } input[type="email"], input[type="password"] {
+  margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+  input[type="submit"] { padding: 10px; background-color: #4CAF50; color: white; border: none;
+  border-radius: 5px; cursor: pointer; } input[type="submit"]:hover { background-color: #45a049; } p
+  { text-align: center; margin-top: 20px; } a { color: #333; text-decoration: none; font-size: 12px;
+  } a:hover { color: #4CAF50; } .button-link { display: inline-block; padding: 10px;
+  background-color: #4CAF50; color: white; border: none; border-radius: 5px; text-decoration: none;
+  text-align: center; cursor: pointer; width: 93%; } .button-link:hover { background-color: #45a049;
+  }
 </style>
 
-
-    <h1>Login</h1>
-    <form action="api/users/login" method="POST">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <input type="submit" value="Login">
-        </form>
-        <p>Or</p>
-        <p><a class="button-link" href="/api/users/githubcallback">Login with GitHub</a></p>
-        <br>
-        <p>Don't have an account? <a class="button-link" href="/register">Register</a></p>
-        <br>
-        <a href="api/users/forgot-password" class="button-link">Forgot Password?</a>
-
-
-
-
+<h1>Login</h1>
+<form action='api/users/login' method='POST'>
+  <label for='email'>Email:</label>
+  <input type='email' id='email' name='email' required />
+  <br />
+  <label for='password'>Password:</label>
+  <input type='password' id='password' name='password' required />
+  <br />
+  <input type='submit' value='Login' />
+</form>
+<p>Or</p>
+<p><a class='button-link' href='/api/users/githubcallback'>Login with GitHub</a></p>
+<br />
+<p>Don't have an account? <a class='button-link' href='/register'>Register</a></p>
+<br />
+<a href='api/users/forgot-password' class='button-link'>Forgot Password?</a>

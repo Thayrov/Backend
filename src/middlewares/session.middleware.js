@@ -15,10 +15,14 @@ export const ensureCart = async (req, res, next) => {
       );
     }
     res.locals.cartId = req.session.cartId;
-    logger.info('next() called without argument');
     next();
   } catch (error) {
     logger.error('Error in ensureCart:', error);
     next(error);
   }
+};
+
+export const productAdded = (req, res, next) => {
+  res.locals.productAdded = req.cookies.productAdded || false;
+  next();
 };

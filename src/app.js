@@ -5,7 +5,6 @@ import path from 'path';
 import compression from 'express-compression';
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import handlebars from 'express-handlebars';
 import passport from 'passport';
 import swaggerUiExpress from 'swagger-ui-express';
 
@@ -16,6 +15,7 @@ import {configureSession} from './config/session.config.js';
 import iniPassport from './config/passport.config.js';
 import {logger} from './config/logger.config.js';
 import {specs} from './config/swagger.config.js';
+import {configureHandlebars} from './config/handlebars.config.js';
 
 // Middlewares
 import errorHandler from './middlewares/error.middleware.js';
@@ -32,12 +32,14 @@ import mockRouter from './routes/mock.routes.js';
 // Environment's port
 const {PORT} = environment;
 
+// Handlebars config file instance
+const hbsEngine = configureHandlebars();
+
 // App asynchronous initialization
 export const initializeApp = async () => {
   const app = express();
 
   // Middleware setup
-
   app.use(compression());
   app.use(express.json());
   app.use(express.urlencoded({extended: true}));
@@ -48,7 +50,7 @@ export const initializeApp = async () => {
   app.use(passport.session());
 
   // Handlebars setup
-  app.engine('handlebars', handlebars.engine());
+  app.engine('handlebars', hbsEngine);
   app.set('views', path.join(rootDir, 'views'));
   app.set('view engine', 'handlebars');
 

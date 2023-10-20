@@ -2,7 +2,10 @@ import {logger} from '../config/logger.config.js';
 
 export const isAuthenticated = (req, res, next) => {
   res.locals.userIsLoggedIn = req.isAuthenticated();
-
+  req.isAdmin = function () {
+    return this.user && this.user.role === 'admin';
+  };
+  res.locals.userIsAdmin = req.isAdmin();
   if (req.isAuthenticated()) {
     return next();
   }

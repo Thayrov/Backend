@@ -1,105 +1,45 @@
 <style>
-    div {
-        width: 300px;
-        margin: 0 auto;
-        margin-top: 20vh;
-        padding: 20px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        background-color: #24292E;
-        border-radius: 10px;
-    }
-
-    h1, h2 {
-        text-align: center;
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    form {
-        display: flex;
-        flex-direction: column;
-    }
-
-    label {
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-
-    input[type="file"], input[type="submit"], select {
-        margin-bottom: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
-    input[type="submit"] {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-
-    input[type="submit"]:hover {
-        background-color: #45a049;
-    }
-
-    p {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    a {
-        color: #333;
-        text-decoration: none;
-        font-size: 12px;
-    }
-
-    a:hover {
-        color: #4CAF50;
-    }
-    .button-link {
-    display: inline-block;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    text-align: center;
-    
-    cursor: pointer;
-    width: 93%;
-    }
-
-    .button-link:hover {
-        background-color: #45a049;
-    }
+  div { width: 300px; margin: 0 auto; margin-top: 20vh; padding: 20px; box-shadow: 0px 0px 10px
+  rgba(0, 0, 0, 0.1); background-color: #24292E; border-radius: 10px; } h1, h2 { text-align: center;
+  font-size: 24px; margin-bottom: 20px; } form { display: flex; flex-direction: column; } label {
+  font-weight: bold; margin-bottom: 5px; } input[type="file"], input[type="submit"], select {
+  margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+  input[type="submit"] { background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+  input[type="submit"]:hover { background-color: #45a049; } p { text-align: center; margin-top:
+  20px; } a { color: #333; text-decoration: none; font-size: 12px; } a:hover { color: #4CAF50; }
+  .button-link { display: inline-block; padding: 10px; background-color: #4CAF50; color: white;
+  border: none; border-radius: 5px; text-decoration: none; text-align: center; cursor: pointer;
+  width: 93%; margin-bottom: 20px;} .button-link:hover { background-color: #45a049; }
 </style>
 
-  <h1>Profile</h1>
-  <p>Name: {{user.first_name}} {{user.last_name}}</p>
-  <p>Email: {{user.email}}</p>
-  <p>Age: {{user.age}}</p>
-  <p>Role: {{user.role}}</p>
-  
-  <!-- Document Upload Form -->
-  <h2>Upload Document</h2>
-  <form action="/api/users/{{user._id}}/documents" method="post" enctype="multipart/form-data">
-    <!-- Document Type -->
-    <label for="docType">Document Type:</label>
-    <select name="type" id="docType">
-      <option value="profile">Profile Image</option>
-      <option value="product">Product Image</option>
-      <option value="document">Other Document</option>
-    </select>
+<h1>Profile</h1>
+<p>Name: {{user.first_name}} {{user.last_name}}</p>
+<p>Email: {{user.email}}</p>
+<p>Age: {{user.age}}</p>
+<p>Role: {{user.role}}</p>
 
-    <!-- File Input -->
-    <label for="fileInput">Choose file:</label>
-    <input type="file" name="documents" id="fileInput" multiple>
+<!-- Document Upload Form -->
+<h2>Upload Document</h2>
+<form action='/api/users/{{user._id}}/documents' method='post' enctype='multipart/form-data'>
+  <!-- Document Type -->
+  <label for='docType'>Document Type:</label>
+  <select name='type' id='docType'>
+    <option value='profile'>Profile Image</option>
+    <option value='product'>Product Image</option>
+    <option value='document'>Other Document</option>
+  </select>
 
-    <!-- Submit Button -->
-    <input type="submit" value="Upload">
-  </form>
+  <!-- File Input -->
+  <label for='fileInput'>Choose file:</label>
+  <input type='file' name='documents' id='fileInput' multiple />
 
-  <a class="button-link" href="/logout">Logout</a>
+  <!-- Submit Button -->
+  <input type='submit' value='Upload' />
+  <!-- View All Users Button -->
+  {{#if userIsAdmin}}
+    <a class='button-link' href='/admin-users'>View All Users</a>
+  {{/if}}
 
+</form>
+
+<a class='button-link' href='/logout'>Logout</a>
