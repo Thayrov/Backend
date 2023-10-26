@@ -11,6 +11,7 @@ This project is an educational example of a backend service for an e-commerce pl
 - [API Documentation](#api-documentation)
 - [Folder Structure](#folder-structure)
 - [Environment Variables](#environment-variables)
+- [Endpoints](#endpoints)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 - [Contact](#contact)
@@ -113,6 +114,64 @@ GOOGLE_EMAIL=
 ```bash
 GOOGLE_PASS=
 ```
+
+## Endpoints
+
+### Views endpoints
+
+get http://localhost:8080
+get http://localhost:8080/view/products/
+get http://localhost:8080/view/products/:pid
+get http://localhost:8080/login
+get http://localhost:8080/register
+get http://localhost:8080/profile
+get http://localhost:8080/admin
+get http://localhost:8080/logout
+
+### Products API endpoints
+
+post http://localhost:8080/api/products
+get http://localhost:8080/api/products
+get http://localhost:8080/api/products/:pid
+put http://localhost:8080/api/products/:pid
+delete http://localhost:8080/api/products/:pid
+
+### Carts API endpoints
+
+post http://localhost:8080/api/carts
+post http://localhost:8080/api/carts/:cid/product/:pid
+post http://localhost:8080/api/carts/:cid/purchase
+get http://localhost:8080/api/carts/:cid
+put http://localhost:8080/api/carts/:cid
+put http://localhost:8080/api/carts/:cid/products/:pid
+delete http://localhost:8080/api/carts/:cid/products/:pid
+delete http://localhost:8080/api/carts/:cid
+
+### Users API endpoints
+
+post http://localhost:8080/api/users/login
+post http://localhost:8080/api/users/request-password-reset
+post http://localhost:8080/api/users/reset-password
+post http://localhost:8080/api/users/register
+post http://localhost:8080/api/users/:uid/documents
+get http://localhost:8080/api/users/github
+get http://localhost:8080/api/users/githubcallback
+get http://localhost:8080/api/users/current
+get http://localhost:8080/api/users/forgot-password
+get http://localhost:8080/api/users/reset-password
+get http://localhost:8080/api/users/all-users
+put http://localhost:8080/api/users/premium/:uid
+delete http://localhost:8080/api/users/cleanup-users
+
+### Other endpoints
+
+get http://localhost:8080/mockingproducts
+get http://localhost:8080/error
+get http://localhost:8080/loggerTest
+use http://localhost:8080/apidocs
+get http://localhost:8080/chat
+post http://localhost:8080/chat
+
 
 ## Contribution Guidelines
 Feel free to open an issue or submit a pull request if you find any bugs or have suggestions for improvements.
