@@ -9,25 +9,25 @@ import passport from 'passport';
 import swaggerUiExpress from 'swagger-ui-express';
 
 // Configurations
-import {isMainModule, rootDir} from './config/dirname.config.js';
-import environment from './config/environment.config.js';
-import {configureSession} from './config/session.config.js';
-import iniPassport from './config/passport.config.js';
-import {logger} from './config/logger.config.js';
-import {specs} from './config/swagger.config.js';
-import {configureHandlebars} from './config/handlebars.config.js';
+import {isMainModule, rootDir} from './src/config/dirname.config.js';
+import environment from './src/config/environment.config.js';
+import {configureSession} from './src/config/session.config.js';
+import iniPassport from './src/config/passport.config.js';
+import {logger} from './src/config/logger.config.js';
+import {specs} from './src/config/swagger.config.js';
+import {configureHandlebars} from './src/config/handlebars.config.js';
 
 // Middlewares
-import errorHandler from './middlewares/error.middleware.js';
+import errorHandler from './src/middlewares/error.middleware.js';
 
 // Routes
-import {errorRouter} from './routes/error.routes.js';
-import {initializeAuthRoutes} from './routes/auth.routes.js';
-import {initializeCartsRoutes} from './routes/carts.routes.js';
-import {initializeProductsRoutes} from './routes/products.routes.js';
-import {initializeViewsRoutes} from './routes/views.routes.js';
-import {loggerRouter} from './routes/logger.routes.js';
-import mockRouter from './routes/mock.routes.js';
+import {errorRouter} from './src/routes/error.routes.js';
+import {initializeAuthRoutes} from './src/routes/auth.routes.js';
+import {initializeCartsRoutes} from './src/routes/carts.routes.js';
+import {initializeProductsRoutes} from './src/routes/products.routes.js';
+import {initializeViewsRoutes} from './src/routes/views.routes.js';
+import {loggerRouter} from './src/routes/logger.routes.js';
+import mockRouter from './src/routes/mock.routes.js';
 
 // Environment's port
 const {PORT} = environment;
@@ -51,7 +51,7 @@ export const initializeApp = async () => {
 
   // Handlebars setup
   app.engine('handlebars', hbsEngine);
-  app.set('views', path.join(rootDir, 'views'));
+  app.set('views', path.join(rootDir, 'src/views'));
   app.set('view engine', 'handlebars');
 
   // Static files

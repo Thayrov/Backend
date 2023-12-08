@@ -5,14 +5,11 @@ const environment = {MODE: process.env.TEST_MODE || process.argv[2]};
 const {MODE} = environment;
 
 if (!['development', 'production'].includes(MODE)) {
-	logger.error('You are not selecting a valid environment');
-	process.exit();
+  logger.error('You are not selecting a valid environment');
+  process.exit();
 }
 dotenv.config({
-	path:
-		process.argv[2] === 'development'
-			? './.env.development'
-			: './.env.production',
+  path: process.argv[2] === 'development' ? './.env.development' : './.env.production',
 });
 
 environment.PORT = process.env.PORT;
