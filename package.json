@@ -8,10 +8,10 @@
     "node": "18.x"
   },
   "scripts": {
-    "start": "node ./src/app.js production",
-    "dev": "nodemon -e yaml,js,handlebars ./src/app.js development",
-    "test": "cross-env TEST_MODE=development mocha --recursive ./test --exit" },
-  
+    "start": "node index.js production",
+    "dev": "nodemon -e yaml,js,handlebars index.js development",
+    "test": "cross-env TEST_MODE=development mocha --recursive ./test --exit"
+  },
   "keywords": [],
   "author": "Thayrov García",
   "license": "ISC",
